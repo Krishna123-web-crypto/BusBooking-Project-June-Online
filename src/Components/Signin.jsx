@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/SignIn.css";
+
 export default function SignIn() {
   const [loginMethod, setLoginMethod] = useState("email");
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ export default function SignIn() {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+
   const handleSignIn = (e) => {
     e.preventDefault();
     if (loginMethod === "email") {
@@ -42,72 +44,61 @@ export default function SignIn() {
       }
     }
   };
+
   return (
     <div className="signin-container">
-      <h2>Sign In</h2>
+      <div className="signin-form">
+        <h2>Sign In</h2>
 
-      <div style={{ display: "flex", marginBottom: "1rem" }}>
-        <button
-          onClick={() => setLoginMethod("email")}
-          style={{
-            flex: 1,
-            padding: "10px",
-            background: loginMethod === "email" ? "#007bff" : "#ddd",
-            color: loginMethod === "email" ? "#fff" : "#000",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Email
-        </button>
-        <button
-          onClick={() => {
-            setLoginMethod("phone");
-            setOtpSent(false);
-          }}
-          style={{
-            flex: 1,
-            padding: "10px",
-            background: loginMethod === "phone" ? "#007bff" : "#ddd",
-            color: loginMethod === "phone" ? "#fff" : "#000",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          Phone
-        </button>
-      </div>
-      <form onSubmit={handleSignIn}>
-        {loginMethod === "email" ? (
-          <>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </>
-        ) : (
-          <>
-            <label>Phone</label>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              disabled={otpSent}
-            />
-            {otpSent && (
-              <>
-                <label>OTP</label>
+        <div className="toggle-buttons">
+          <button
+            className={loginMethod === "email" ? "active" : ""}
+            onClick={() => setLoginMethod("email")}
+            type="button"
+          >
+            Email
+          </button>
+          <button
+            className={loginMethod === "phone" ? "active" : ""}
+            onClick={() => {
+              setLoginMethod("phone");
+              setOtpSent(false);
+            }}
+            type="button"
+          >
+            Phone
+          </button>
+        </div>
+
+        <form onSubmit={handleSignIn} className="signin-form-fields">
+          {loginMethod === "email" ? (
+            <>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Email"
+              />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Password"
+              />
+            </>
+          ) : (
+            <>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                disabled={otpSent}
+                placeholder="Phone Number"
+              />
+              {otpSent && (
                 <input
                   type="text"
                   value={otp}
@@ -115,14 +106,14 @@ export default function SignIn() {
                   required
                   placeholder="Enter OTP (1234)"
                 />
-              </>
-            )}
-          </>
-        )}
-        <button type="submit">
-          {loginMethod === "phone" && !otpSent ? "Send OTP" : "Sign In"}
-        </button>
-      </form>
+              )}
+            </>
+          )}
+          <button type="submit">
+            {loginMethod === "phone" && !otpSent ? "Send OTP" : "Sign In"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

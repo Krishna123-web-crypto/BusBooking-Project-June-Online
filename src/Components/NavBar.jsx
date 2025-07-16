@@ -5,11 +5,18 @@ export default function NavBar() {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("loggedIn") === "true";
   const user = localStorage.getItem("user");
+  let userDisplay = "";
+  try {
+    const parsedUser = JSON.parse(user);
+    userDisplay = parsedUser.email || parsedUser.phone || "";
+  } catch {
+    userDisplay = user;
+  }
   const handleSignOut = () => {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("user");
     navigate("/signin");
-    window.location.reload(); 
+    window.location.reload();
   };
   return (
     <nav className="navbar">
@@ -23,10 +30,10 @@ export default function NavBar() {
           <li><Link to="/about" className="nav-item">About</Link></li>
           <li><Link to="/contact" className="nav-item">Contact</Link></li>
           <li><Link to="/search" className="nav-item">SearchBus</Link></li>
-          {isLoggedIn && user ? (
+          {isLoggedIn && userDisplay ? (
             <>
               <li><Link to="/booking" className="nav-item">Booking</Link></li>
-              <li><span className="nav-user">👤 {user}</span></li>
+              <li><span className="nav-user">👤 {userDisplay}</span></li>
               <li>
                 <button className="nav-item logout-button" onClick={handleSignOut}>
                   Sign Out

@@ -6,7 +6,7 @@ import About from "./Components/About";
 import Contact from "./Components/Contact";
 import SearchBus from "./Components/SearchBus";
 import BookingPage from "./Components/BookingPage";
-import SignIn from "./Components/SignIn";
+import SignIn from "./Components/Signin";
 import NotFound from "./Components/NotFound";
 export default function App() {
   const isLoggedIn = localStorage.getItem("loggedIn") === "true";
