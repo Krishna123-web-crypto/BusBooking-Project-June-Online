@@ -1,0 +1,72 @@
+.booking-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.journey-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+select,
+input[type="date"] {
+  padding: 8px;
+  font-size: 16px;
+  flex: 1;
+}
+
+.journey-info {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.seats-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.seat-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.aisle {
+  width: 40px;
+}
+
+.seat {
+  padding: 10px 15px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+}
+
+.seat.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.seat.booked {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.summary {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.summary button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
