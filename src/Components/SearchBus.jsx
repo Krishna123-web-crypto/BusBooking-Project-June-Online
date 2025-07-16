@@ -25,8 +25,6 @@ export default function SearchBus() {
       departure: "11:00 AM",
       arrival: "4:00 PM",
       fare: 450,
-      totalSeats: 32,
-      bookedSeats: [],
     },
     {
       id: 3,
@@ -38,8 +36,6 @@ export default function SearchBus() {
       departure: "6:00 PM",
       arrival: "11:00 PM",
       fare: 600,
-      totalSeats: 32,
-      bookedSeats: [3, 7],
     },
   ];
   const [from, setFrom] = useState("");
