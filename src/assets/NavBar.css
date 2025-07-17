@@ -20,12 +20,17 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
 .logo-section {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: bold;
-  margin-right: 30px; 
+  margin-right: 40px; 
 }
 .logo-icon {
   margin-right: 8px;
@@ -34,7 +39,7 @@
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 }
 .nav-item {
   text-decoration: none;
@@ -44,6 +49,15 @@
 }
 .nav-item:hover {
   color: #f39c12;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.nav-user {
+  font-size: 0.95rem;
+  color: #bdc3c7;
 }
 .logout-button {
   background: #e74c3c;
@@ -58,8 +72,3 @@
 .logout-button:hover {
   background: #c0392b;
 }
-.nav-user {
-  font-size: 0.95rem;
-  color: #bdc3c7;
-}
-
