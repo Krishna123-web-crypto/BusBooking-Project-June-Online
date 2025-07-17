@@ -14,7 +14,8 @@ const sampleBuses = [
     departure: "9:00 AM",
     arrival: "2:00 PM",
     fare: 500,
-    totalSeats: 32,
+    totalSeats: 36,
+    bookedSeats: [],
   },
   {
     id: 2,
@@ -26,7 +27,8 @@ const sampleBuses = [
     departure: "11:00 AM",
     arrival: "4:00 PM",
     fare: 450,
-    totalSeats: 32,
+    totalSeats: 36,
+    bookedSeats: [],
   },
   {
     id: 3,
@@ -38,6 +40,8 @@ const sampleBuses = [
     departure: "6:00 PM",
     arrival: "11:00 PM",
     fare: 600,
+    totalSeats: 36,
+    bookedSeats: [],
   },
   {
     id: 4,
@@ -49,7 +53,8 @@ const sampleBuses = [
     departure: "9:00 AM",
     arrival: "2:00 PM",
     fare: 500,
-    totalSeats: 32,
+    totalSeats: 36,
+    bookedSeats: [],
   },
   {
     id: 5,
@@ -61,7 +66,34 @@ const sampleBuses = [
     departure: "6:00 PM",
     arrival: "11:00 PM",
     fare: 600,
-    totalSeats: 32,
+    totalSeats: 36,
+    bookedSeats: [],
+  },
+  {
+    id: 6,
+    name: "APSRTC Express",
+    type: "AC",
+    from: "Hyderabad",
+    to: "Rajampet",
+    date: "2025-07-20",
+    departure: "9:00 AM",
+    arrival: "2:00 PM",
+    fare: 500,
+    totalSeats: 36,
+    bookedSeats: [],
+  },
+  {
+    id: 7,
+    name: "APSRTC Express",
+    type: "AC",
+    from: "Hyderabad",
+    to: "Tirupati",
+    date: "2025-07-20",
+    departure: "9:00 AM",
+    arrival: "2:00 PM",
+    fare: 500,
+    totalSeats: 36,
+    bookedSeats: [],
   },
 ];
 export default function SearchBus() {
@@ -69,8 +101,8 @@ export default function SearchBus() {
   const [to, setTo] = useState("");
   const [busType, setBusType] = useState("All");
   const [results, setResults] = useState(null);
-  const { selectBus } = useContext(BookingContext);
   const navigate = useNavigate();
+  const { selectBus } = useContext(BookingContext);
   const handleSearch = (e) => {
     e.preventDefault();
     if (!from || !to) {
@@ -103,13 +135,10 @@ export default function SearchBus() {
           onClick={() => navigate(-1)}
           aria-label="Back"
         >
+          ←
         </button>
         MYBUSBOOK
       </header>
-      <div className="tab-bar">
-        <div className="tab">Schedule In General (60)</div>
-        <div className="tab">Upcoming Trips (12)</div>
-      </div>
       <form className="search-form" onSubmit={handleSearch}>
         <select
           value={from}
@@ -146,6 +175,7 @@ export default function SearchBus() {
           <option value="Deluxe">Deluxe</option>
           <option value="Express">Express</option>
         </select>
+
         <button type="submit">Search</button>
       </form>
       <div className="results">
@@ -157,9 +187,7 @@ export default function SearchBus() {
             return (
               <div key={bus.id} className="bus-card">
                 <div className="bus-header">
-                  <span className="service-no">
-                    Service No: {bus.id}
-                  </span>
+                  <span className="service-no">Service No: {bus.id}</span>
                   <span className="bus-type">{bus.type}</span>
                 </div>
                 <p>
@@ -189,4 +217,3 @@ export default function SearchBus() {
     </div>
   );
 }
-

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import SearchForm from "../Components/SearchForm"; 
+import SearchForm from "../Components/SearchForm";
 import "../assets/BookingPage.css";
 const sampleBuses = [
-  { id: 1, name: "APSRTC Express", type: "AC",     departure: "9:00 AM",  arrival: "2:00 PM",  fare: 500 },
-  { id: 2, name: "National Travels", type: "Non-AC", departure: "11:00 AM", arrival: "4:00 PM",  fare: 450 },
-  { id: 3, name: "SRS Deluxe",      type: "Deluxe", departure: "6:00 PM",  arrival: "11:00 PM", fare: 600 },
+  { id: 1, name: "APSRTC Express", type: "AC", departure: "9:00 AM", arrival: "2:00 PM", fare: 500 },
+  { id: 2, name: "National Travels", type: "Non-AC", departure: "11:00 AM", arrival: "4:00 PM", fare: 450 },
+  { id: 3, name: "SRS Deluxe", type: "Deluxe", departure: "6:00 PM", arrival: "11:00 PM", fare: 600 },
 ];
+
 const LS_KEY = "bookedSeatsByBus";
 function loadBookedSeats() {
   try {
@@ -20,12 +21,13 @@ function saveBookedSeats(obj) {
 }
 export default function BookingPage() {
   const [buses, setBuses] = useState([]);
-  const [journeyDetails, setJourneyDetails] = useState(null); // {from,to,date,busType}
+  const [journeyDetails, setJourneyDetails] = useState(null);
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [bookedSeats, setBookedSeats] = useState(() => loadBookedSeats()); // {busId:[...]}
+  const [bookedSeats, setBookedSeats] = useState(() => loadBookedSeats());
   const [passengerName, setPassengerName] = useState("");
   const [passengerEmail, setPassengerEmail] = useState("");
+  const [passengerPhone, setPassengerPhone] = useState("");
   useEffect(() => {
     saveBookedSeats(bookedSeats);
   }, [bookedSeats]);
@@ -38,6 +40,7 @@ export default function BookingPage() {
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
+    setPassengerPhone("");
     setJourneyDetails({ from, to, date, busType });
   };
   const handleSelectBus = (bus) => {
@@ -56,8 +59,8 @@ export default function BookingPage() {
       alert("Missing journey details.");
       return;
     }
-    if (!passengerName || !passengerEmail) {
-      alert("Please enter passenger name & email.");
+    if (!passengerName || !passengerEmail || !passengerPhone) {
+      alert("Please enter passenger name, email, and phone number.");
       return;
     }
     if (!selectedSeats.length) {
@@ -71,21 +74,22 @@ export default function BookingPage() {
     setBookedSeats(newBookedSeats);
     alert(
       `Booking Confirmed!\n` +
-        `Route: ${journeyDetails.from} → ${journeyDetails.to}\n` +
-        `Date: ${journeyDetails.date}\n` +
-        `Bus: ${selectedBus.name}\n` +
-        `Seats: ${selectedSeats.join(", ")}\n` +
-        `Passenger: ${passengerName} (${passengerEmail})\n` +
-        `Total: ₹${selectedSeats.length * selectedBus.fare}`
+      `Route: ${journeyDetails.from} → ${journeyDetails.to}\n` +
+      `Date: ${journeyDetails.date}\n` +
+      `Bus: ${selectedBus.name}\n` +
+      `Seats: ${selectedSeats.join(", ")}\n` +
+      `Passenger: ${passengerName} (${passengerEmail}, ${passengerPhone})\n` +
+      `Total: ₹${selectedSeats.length * selectedBus.fare}`
     );
-
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
+    setPassengerPhone("");
   };
-  const seatRows = [...Array(8)].map((_, rowIndex) => {
-    const base = rowIndex * 4;
-    return [base + 1, base + 2, base + 3, base + 4]; // L1,L2,R1,R2
+  const seatRows = [...Array(9)].map((_, rowIndex) => {
+    const base = rowIndex * 4 + 1;
+    if (rowIndex === 8) return [33, 34, 35, 36]; 
+    return [base, base + 1, base + 2, base + 3];
   });
   return (
     <div className="booking-container">
@@ -93,26 +97,18 @@ export default function BookingPage() {
       {buses.length > 0 && !selectedBus && (
         <div className="bus-list">
           {buses.map((bus) => {
-            const totalSeats = 32;
+            const totalSeats = 36;
             const taken = (bookedSeats[bus.id] || []).length;
             const available = totalSeats - taken;
             return (
               <div key={bus.id} className="bus-card">
-                <h3>
-                  {bus.name} ({bus.type})
-                </h3>
+                <h3>{bus.name} ({bus.type})</h3>
                 {journeyDetails && (
-                  <p>
-                    {journeyDetails.from} → {journeyDetails.to} on {journeyDetails.date}
-                  </p>
+                  <p>{journeyDetails.from} → {journeyDetails.to} on {journeyDetails.date}</p>
                 )}
-                <p>
-                  {bus.departure} - {bus.arrival}
-                </p>
+                <p>{bus.departure} - {bus.arrival}</p>
                 <p>Fare: ₹{bus.fare} per seat</p>
-                <p>
-                  Available: {available} / {totalSeats}
-                </p>
+                <p>Available: {available} / {totalSeats}</p>
                 <button
                   disabled={available <= 0}
                   onClick={() => handleSelectBus(bus)}
@@ -128,21 +124,13 @@ export default function BookingPage() {
         <>
           <div className="journey-info">
             <h4>Journey Details</h4>
-            <p>
-              <strong>From:</strong> {journeyDetails.from}
-            </p>
-            <p>
-              <strong>To:</strong> {journeyDetails.to}
-            </p>
-            <p>
-              <strong>Date of Journey:</strong> {journeyDetails.date}
-            </p>
+            <p><strong>From:</strong> {journeyDetails.from}</p>
+            <p><strong>To:</strong> {journeyDetails.to}</p>
+            <p><strong>Date of Journey:</strong> {journeyDetails.date}</p>
           </div>
-
           <div className="seat-selection">
             <h2>{selectedBus.name} – Seat Selection</h2>
             <p>Fare per seat: ₹{selectedBus.fare}</p>
-
             <div className="seats-layout">
               {seatRows.map((row, rowIndex) => (
                 <div key={rowIndex} className="seat-row">
@@ -152,9 +140,7 @@ export default function BookingPage() {
                     return (
                       <button
                         key={seat}
-                        className={`seat ${selected ? "selected" : ""} ${
-                          booked ? "booked" : ""
-                        }`}
+                        className={`seat ${selected ? "selected" : ""} ${booked ? "booked" : ""}`}
                         disabled={booked}
                         onClick={() => handleSeatSelect(seat)}
                       >
@@ -163,15 +149,13 @@ export default function BookingPage() {
                     );
                   })}
                   <div className="aisle" />
-                  {row.slice(2, 4).map((seat) => {
+                  {row.slice(2).map((seat) => {
                     const booked = isSeatBooked(selectedBus.id, seat);
                     const selected = selectedSeats.includes(seat);
                     return (
                       <button
                         key={seat}
-                        className={`seat ${selected ? "selected" : ""} ${
-                          booked ? "booked" : ""
-                        }`}
+                        className={`seat ${selected ? "selected" : ""} ${booked ? "booked" : ""}`}
                         disabled={booked}
                         onClick={() => handleSeatSelect(seat)}
                       >
@@ -184,13 +168,10 @@ export default function BookingPage() {
             </div>
             <div className="contact-form-box">
               <h3>Passenger Contact</h3>
-              <form
-                className="contact-form inline-passenger"
-                onSubmit={(e) => e.preventDefault()}
-              >
+              <form className="contact-form inline-passenger" onSubmit={(e) => e.preventDefault()}>
                 <input
                   type="text"
-                  placeholder="Passenger Name"
+                  placeholder="Name"
                   value={passengerName}
                   onChange={(e) => setPassengerName(e.target.value)}
                   required
@@ -202,17 +183,19 @@ export default function BookingPage() {
                   onChange={(e) => setPassengerEmail(e.target.value)}
                   required
                 />
+                <input
+                  type="tel"
+                  placeholder="Phone"
+                  value={passengerPhone}
+                  onChange={(e) => setPassengerPhone(e.target.value)}
+                  required
+                />
               </form>
             </div>
+
             <div className="summary">
-              <p>
-                <strong>Selected Seats:</strong>{" "}
-                {selectedSeats.join(", ") || "None"}
-              </p>
-              <p>
-                <strong>Total Amount:</strong> ₹
-                {selectedSeats.length * selectedBus.fare}
-              </p>
+              <p><strong>Selected Seats:</strong> {selectedSeats.join(", ") || "None"}</p>
+              <p><strong>Total Amount:</strong> ₹{selectedSeats.length * selectedBus.fare}</p>
               <button
                 onClick={handleBookingConfirm}
                 disabled={selectedSeats.length === 0}
