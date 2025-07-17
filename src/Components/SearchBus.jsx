@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../assets/SearchBus.css";
+import { useNavigate } from "react-router-dom";
+import { BookingContext } from "./Context/BookingContext";
 export default function SearchBus() {
   const sampleBuses = [
     {
@@ -25,23 +27,16 @@ export default function SearchBus() {
       departure: "11:00 AM",
       arrival: "4:00 PM",
       fare: 450,
-    },
-    {
-      id: 3,
-      name: "SRS Deluxe",
-      type: "Deluxe",
-      from: "Hyderabad",
-      to: "Chennai",
-      date: "2025-07-22",
-      departure: "6:00 PM",
-      arrival: "11:00 PM",
-      fare: 600,
+      totalSeats: 32,
+      bookedSeats: [2, 8, 12],
     },
   ];
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [busType, setBusType] = useState("All");
   const [results, setResults] = useState([]);
+  const { selectBus } = useContext(BookingContext);
+  const navigate = useNavigate();
   const handleSearch = (e) => {
     e.preventDefault();
     if (!from || !to) {
@@ -56,6 +51,10 @@ export default function SearchBus() {
     );
     setResults(filtered);
   };
+  const handleSelectBus = (bus) => {
+    selectBus(bus);
+    navigate("/booking");
+  };
   return (
     <div className="search-container">
       <h2>Search Buses</h2>
@@ -65,43 +64,33 @@ export default function SearchBus() {
           placeholder="From"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
-          required
         />
         <input
           type="text"
           placeholder="To"
           value={to}
           onChange={(e) => setTo(e.target.value)}
-          required
         />
         <select value={busType} onChange={(e) => setBusType(e.target.value)}>
           <option value="All">All Types</option>
           <option value="AC">AC</option>
-          <option value="Deluxe">Deluxe</option>
-          <option value="Express">Express</option>
           <option value="Non-AC">Non-AC</option>
         </select>
         <button type="submit">Search</button>
       </form>
+
       <div className="results">
         {results.length > 0 ? (
           results.map((bus) => {
             const availableSeats = bus.totalSeats - bus.bookedSeats.length;
             return (
               <div key={bus.id} className="bus-card">
-                <h3>
-                  {bus.name} ({bus.type})
-                </h3>
-                <p>
-                  {bus.from} → {bus.to}
-                </p>
-                <p>
-                  Departure: {bus.departure}, Arrival: {bus.arrival}
-                </p>
+                <h3>{bus.name} ({bus.type})</h3>
+                <p>{bus.from} → {bus.to}</p>
+                <p>Departure: {bus.departure}, Arrival: {bus.arrival}</p>
                 <p>Fare: ₹{bus.fare}</p>
-                <p>
-                  Available Seats: {availableSeats} / {bus.totalSeats}
-                </p>
+                <p>Available Seats: {availableSeats}</p>
+                <button onClick={() => handleSelectBus(bus)}>Select Bus</button>
               </div>
             );
           })

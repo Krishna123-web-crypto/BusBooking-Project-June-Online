@@ -1,23 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/NavBar.css";
+import { AuthContext } from "./Context/AuthContext";
 export default function NavBar() {
+  const { isLoggedIn, user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
-  const user = localStorage.getItem("user");
-  let userDisplay = "";
-  try {
-    const parsedUser = JSON.parse(user);
-    userDisplay = parsedUser.email || parsedUser.phone || "";
-  } catch {
-    userDisplay = user;
-  }
   const handleSignOut = () => {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("user");
+    logout();
     navigate("/signin");
-    window.location.reload();
   };
+  const userDisplay = user?.email || user?.phone || user?.name || "";
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -30,10 +22,12 @@ export default function NavBar() {
           <li><Link to="/about" className="nav-item">About</Link></li>
           <li><Link to="/contact" className="nav-item">Contact</Link></li>
           <li><Link to="/search" className="nav-item">SearchBus</Link></li>
-          {isLoggedIn && userDisplay ? (
+          {isLoggedIn ? (
             <>
               <li><Link to="/booking" className="nav-item">Booking</Link></li>
-              <li><span className="nav-user">👤 {userDisplay}</span></li>
+              {userDisplay && (
+                <li><span className="nav-user">👤 {userDisplay}</span></li>
+              )}
               <li>
                 <button className="nav-item logout-button" onClick={handleSignOut}>
                   Sign Out
@@ -41,11 +35,13 @@ export default function NavBar() {
               </li>
             </>
           ) : (
-            <li><Link to="/signin" className="nav-item">Sign In</Link></li>
+            <>
+              <li><Link to="/signin" className="nav-item">Sign In</Link></li>
+              <li><Link to="/register" className="nav-item">Register</Link></li>
+            </>
           )}
         </ul>
       </div>
     </nav>
   );
 }
-

@@ -1,25 +1,24 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "../assets/SignIn.css";
-
+import React, { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import "../assets/Signin.css";
+import { AuthContext } from "./Context/AuthContext";
 export default function SignIn() {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [loginMethod, setLoginMethod] = useState("email");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const navigate = useNavigate();
 
   const handleSignIn = (e) => {
     e.preventDefault();
     if (loginMethod === "email") {
       if (email && password) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("user", email);
+        login({ email });
         alert(`Signed in with Email: ${email}`);
         navigate("/");
-        window.location.reload(); // Reload to update NavBar
       } else {
         alert("Please enter both email and password.");
       }
@@ -33,18 +32,15 @@ export default function SignIn() {
         }
       } else {
         if (otp === "1234") {
-          localStorage.setItem("loggedIn", "true");
-          localStorage.setItem("user", phone);
+          login({ phone });
           alert(`Signed in with Phone: ${phone}`);
           navigate("/");
-          window.location.reload();
         } else {
           alert("Invalid OTP");
         }
       }
     }
   };
-
   return (
     <div className="signin-container">
       <div className="signin-form">
@@ -113,6 +109,10 @@ export default function SignIn() {
             {loginMethod === "phone" && !otpSent ? "Send OTP" : "Sign In"}
           </button>
         </form>
+
+        <p>
+          Don’t have an account? <Link to="/register">Register</Link>
+        </p>
       </div>
     </div>
   );
