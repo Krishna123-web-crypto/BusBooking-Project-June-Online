@@ -27,9 +27,12 @@ export default function BookingPage() {
   const [passengerName, setPassengerName] = useState("");
   const [passengerEmail, setPassengerEmail] = useState("");
   const [passengerPhone, setPassengerPhone] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
   useEffect(() => {
     saveBookedSeats(bookedSeats);
   }, [bookedSeats]);
+
   const handleSearch = ({ from, to, date, busType }) => {
     const results = sampleBuses.filter(
       (bus) => busType === "All" || bus.type === busType
@@ -45,6 +48,8 @@ export default function BookingPage() {
   const handleSelectBus = (bus) => {
     setSelectedBus(bus);
     setSelectedSeats([]);
+    setShowPayment(false);
+    setPaymentMethod("");
   };
   const handleSeatSelect = (seat) => {
     setSelectedSeats((prev) =>
@@ -52,18 +57,16 @@ export default function BookingPage() {
     );
   };
   const isSeatBooked = (busId, seat) => (bookedSeats[busId] || []).includes(seat);
+  const handleProceedToPayment = () => {
+    if (!selectedBus || !passengerName || !passengerEmail || !passengerPhone || selectedSeats.length === 0) {
+      alert("Please fill all details and select seats.");
+      return;
+    }
+    setShowPayment(true);
+  };
   const handleBookingConfirm = () => {
-    if (!selectedBus) return;
-    if (!journeyDetails?.from || !journeyDetails?.to || !journeyDetails?.date) {
-      alert("Missing journey details.");
-      return;
-    }
-    if (!passengerName || !passengerEmail || !passengerPhone) {
-      alert("Please enter passenger name, email, and phone number.");
-      return;
-    }
-    if (!selectedSeats.length) {
-      alert("Select at least one seat.");
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
       return;
     }
     const busId = selectedBus.id;
@@ -72,7 +75,7 @@ export default function BookingPage() {
     const newBookedSeats = { ...bookedSeats, [busId]: updated };
     setBookedSeats(newBookedSeats);
     alert(
-      `Booking Confirmed!\n` +
+      `✅ Booking Confirmed via ${paymentMethod}!\n` +
       `Route: ${journeyDetails.from} → ${journeyDetails.to}\n` +
       `Date: ${journeyDetails.date}\n` +
       `Bus: ${selectedBus.name}\n` +
@@ -84,6 +87,8 @@ export default function BookingPage() {
     setPassengerName("");
     setPassengerEmail("");
     setPassengerPhone("");
+    setShowPayment(false);
+    setPaymentMethod("");
   };
   const seatRows = [...Array(9)].map((_, rowIndex) => {
     const base = rowIndex * 4 + 1;
@@ -190,16 +195,56 @@ export default function BookingPage() {
                 />
               </form>
             </div>
-
             <div className="summary">
               <p><strong>Selected Seats:</strong> {selectedSeats.join(", ") || "None"}</p>
               <p><strong>Total Amount:</strong> ₹{selectedSeats.length * selectedBus.fare}</p>
-              <button
-                onClick={handleBookingConfirm}
-                disabled={selectedSeats.length === 0}
-              >
-                Confirm Booking
-              </button>
+              {!showPayment ? (
+                <button
+                  onClick={handleProceedToPayment}
+                  disabled={selectedSeats.length === 0}
+                >
+                  Proceed to Payment
+                </button>
+              ) : (
+                <div className="payment-section">
+                  <h3>Select Payment Method</h3>
+                  <div className="payment-options">
+                    <label>
+                      <input
+                        type="radio"
+                        value="UPI"
+                        checked={paymentMethod === "UPI"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />{" "}
+                      UPI (PhonePe / Paytm)
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        value="Card"
+                        checked={paymentMethod === "Card"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />{" "}
+                      Credit/Debit Card
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        value="NetBanking"
+                        checked={paymentMethod === "NetBanking"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      />{" "}
+                      NetBanking
+                    </label>
+                  </div>
+                  <button
+                    onClick={handleBookingConfirm}
+                    disabled={!paymentMethod}
+                  >
+                    Confirm & Pay ₹{selectedSeats.length * selectedBus.fare}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </>

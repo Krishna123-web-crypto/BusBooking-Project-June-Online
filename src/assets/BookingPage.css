@@ -82,3 +82,34 @@
   border-radius: 6px;
   cursor: pointer;
 }
+.payment-section {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+}
+
+.payment-section h3 {
+  margin-bottom: 10px;
+}
+
+.payment-options label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.payment-section button {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.payment-section button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
