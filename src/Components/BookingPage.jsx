@@ -6,7 +6,6 @@ const sampleBuses = [
   { id: 2, name: "National Travels", type: "Non-AC", departure: "11:00 AM", arrival: "4:00 PM", fare: 450 },
   { id: 3, name: "SRS Deluxe", type: "Deluxe", departure: "6:00 PM", arrival: "11:00 PM", fare: 600 },
 ];
-
 const LS_KEY = "bookedSeatsByBus";
 function loadBookedSeats() {
   try {
@@ -88,8 +87,7 @@ export default function BookingPage() {
   };
   const seatRows = [...Array(9)].map((_, rowIndex) => {
     const base = rowIndex * 4 + 1;
-    if (rowIndex === 8) return [33, 34, 35, 36]; 
-    return [base, base + 1, base + 2, base + 3];
+    return rowIndex === 8 ? [33, 34, 35, 36] : [base, base + 1, base + 2, base + 3];
   });
   return (
     <div className="booking-container">
@@ -209,4 +207,3 @@ export default function BookingPage() {
     </div>
   );
 }
-
