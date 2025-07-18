@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchForm from "../Components/SearchForm";
 import "../assets/BookingPage.css";
 const sampleBuses = [
-  { id: 1, name: "APSRTC Express", type: "AC", departure: "9:00 AM", arrival: "2:00 PM", fare: 500 },
+  { id: 1, name: "APSRTC Express", type: "Non-AC", departure: "9:00 PM", arrival: "6:00 PM", fare: 500 },
   { id: 2, name: "National Travels", type: "Non-AC", departure: "11:00 AM", arrival: "4:00 PM", fare: 450 },
   { id: 3, name: "SRS Deluxe", type: "Deluxe", departure: "6:00 PM", arrival: "11:00 PM", fare: 600 },
 ];
@@ -15,9 +15,11 @@ function loadBookedSeats() {
     return {};
   }
 }
+
 function saveBookedSeats(obj) {
   localStorage.setItem(LS_KEY, JSON.stringify(obj));
 }
+
 export default function BookingPage() {
   const [buses, setBuses] = useState([]);
   const [journeyDetails, setJourneyDetails] = useState(null);
@@ -29,6 +31,7 @@ export default function BookingPage() {
   const [passengerPhone, setPassengerPhone] = useState("");
   const [showPayment, setShowPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+
   useEffect(() => {
     saveBookedSeats(bookedSeats);
   }, [bookedSeats]);
@@ -45,18 +48,24 @@ export default function BookingPage() {
     setPassengerPhone("");
     setJourneyDetails({ from, to, date, busType });
   };
+
   const handleSelectBus = (bus) => {
     setSelectedBus(bus);
     setSelectedSeats([]);
     setShowPayment(false);
     setPaymentMethod("");
   };
+
   const handleSeatSelect = (seat) => {
     setSelectedSeats((prev) =>
-      prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
+      prev.includes(seat)
+        ? prev.filter((s) => s !== seat)
+        : [...prev, seat]
     );
   };
+
   const isSeatBooked = (busId, seat) => (bookedSeats[busId] || []).includes(seat);
+
   const handleProceedToPayment = () => {
     if (!selectedBus || !passengerName || !passengerEmail || !passengerPhone || selectedSeats.length === 0) {
       alert("Please fill all details and select seats.");
@@ -64,16 +73,19 @@ export default function BookingPage() {
     }
     setShowPayment(true);
   };
+
   const handleBookingConfirm = () => {
     if (!paymentMethod) {
       alert("Please select a payment method.");
       return;
     }
+
     const busId = selectedBus.id;
     const existing = bookedSeats[busId] || [];
     const updated = [...new Set([...existing, ...selectedSeats])];
     const newBookedSeats = { ...bookedSeats, [busId]: updated };
     setBookedSeats(newBookedSeats);
+
     alert(
       `✅ Booking Confirmed via ${paymentMethod}!\n` +
       `Route: ${journeyDetails.from} → ${journeyDetails.to}\n` +
@@ -83,6 +95,7 @@ export default function BookingPage() {
       `Passenger: ${passengerName} (${passengerEmail}, ${passengerPhone})\n` +
       `Total: ₹${selectedSeats.length * selectedBus.fare}`
     );
+
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
@@ -90,10 +103,12 @@ export default function BookingPage() {
     setShowPayment(false);
     setPaymentMethod("");
   };
+
   const seatRows = [...Array(9)].map((_, rowIndex) => {
     const base = rowIndex * 4 + 1;
     return rowIndex === 8 ? [33, 34, 35, 36] : [base, base + 1, base + 2, base + 3];
   });
+
   return (
     <div className="booking-container">
       <SearchForm onSearch={handleSearch} />
@@ -123,6 +138,7 @@ export default function BookingPage() {
           })}
         </div>
       )}
+
       {selectedBus && journeyDetails && (
         <>
           <div className="journey-info">
@@ -131,6 +147,7 @@ export default function BookingPage() {
             <p><strong>To:</strong> {journeyDetails.to}</p>
             <p><strong>Date of Journey:</strong> {journeyDetails.date}</p>
           </div>
+
           <div className="seat-selection">
             <h2>{selectedBus.name} – Seat Selection</h2>
             <p>Fare per seat: ₹{selectedBus.fare}</p>
@@ -169,6 +186,7 @@ export default function BookingPage() {
                 </div>
               ))}
             </div>
+
             <div className="contact-form-box">
               <h3>Passenger Contact</h3>
               <form className="contact-form inline-passenger" onSubmit={(e) => e.preventDefault()}>
@@ -195,9 +213,11 @@ export default function BookingPage() {
                 />
               </form>
             </div>
+
             <div className="summary">
               <p><strong>Selected Seats:</strong> {selectedSeats.join(", ") || "None"}</p>
               <p><strong>Total Amount:</strong> ₹{selectedSeats.length * selectedBus.fare}</p>
+
               {!showPayment ? (
                 <button
                   onClick={handleProceedToPayment}
@@ -215,8 +235,7 @@ export default function BookingPage() {
                         value="UPI"
                         checked={paymentMethod === "UPI"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                      />{" "}
-                      UPI (PhonePe / Paytm)
+                      /> UPI (PhonePe / Paytm)
                     </label>
                     <label>
                       <input
@@ -224,8 +243,7 @@ export default function BookingPage() {
                         value="Card"
                         checked={paymentMethod === "Card"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                      />{" "}
-                      Credit/Debit Card
+                      /> Credit/Debit Card
                     </label>
                     <label>
                       <input
@@ -233,8 +251,7 @@ export default function BookingPage() {
                         value="NetBanking"
                         checked={paymentMethod === "NetBanking"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                      />{" "}
-                      NetBanking
+                      /> NetBanking
                     </label>
                   </div>
                   <button
