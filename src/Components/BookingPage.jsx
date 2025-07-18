@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import SearchForm from "../Components/SearchForm";
 import "../assets/BookingPage.css";
 const sampleBuses = [
-  { id: 1, name: "APSRTC Express", type: "Non-AC", departure: "9:00 PM", arrival: "6:00 PM", fare: 500 },
-  { id: 2, name: "National Travels", type: "Non-AC", departure: "11:00 AM", arrival: "4:00 PM", fare: 450 },
-  { id: 3, name: "SRS Deluxe", type: "Deluxe", departure: "6:00 PM", arrival: "11:00 PM", fare: 600 },
+  [
+  { id: 1, name: "TSRTC Express", type: "AC", departure: "9:00 PM", arrival: "6:00 AM", fare: 500 },
+  { id: 2, name: "APSRTC ULTRA Deluxe", type: "Non-AC", departure: "6:00 AM", arrival: "2:00 PM", fare: 600 },
+  { id: 3, name: "Apsrtc Ultra Deluxe", type: "AC", departure: "5:00 PM", arrival: "11:00 PM", fare: 550 },
+  { id: 4, name: "Apsrtc Express", type: "Non-AC", departure: "5:00 AM", arrival: "8:30 AM", fare: 400 },
+  { id: 5, name: "APSRTC Ultra Deluxe", type: "AC", departure: "7:30 PM", arrival: "6:00 AM", fare: 600 },
+  { id: 4, name: "APSRTC Express", type: "AC", departure: "8:00 PM", arrival: "5:00 AM", fare: 500 },
+  { id: 5, name: "APSRTC Express", type: "Non-AC", departure: "9:00 PM", arrival: "6:30 AM", fare: 480 },
+  { id: 6, name: "APSRTC Express", type: "Non-AC", departure: "6:30 PM", arrival: "5:00 AM", fare: 600 },
+  { id: 7, name: "APSRTC Ultra Deluxe", type: "AC", departure: "7:00 PM", arrival: "5:30 AM", fare: 530 },
+  { id: 8, name: "APSRTC Express", type: "Non-AC", departure: "6:00 PM", arrival: "9:00 PM", fare: 200 },
+]
 ];
 const LS_KEY = "bookedSeatsByBus";
 function loadBookedSeats() {
