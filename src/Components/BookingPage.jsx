@@ -2,16 +2,16 @@ import React, { useState, useEffect, useMemo } from "react";
 import SearchForm from "../Components/SearchForm"; // expects props: onSearch({ from, to, date, busType })
 import "../assets/BookingPage.css";
 const sampleBuses = [
-  { id: 1, name: "Garuda", type: "AC", departure: "9:00 PM", arrival: "6:00 AM", fare: 500 },
-  { id: 2, name: "Garuda Plus", type: "Non-AC", departure: "6:00 AM", arrival: "2:00 PM", fare: 600 },
-  { id: 3, name: "Amaravati", type: "AC", departure: "5:00 PM", arrival: "11:00 PM", fare: 550 },
-  { id: 4, name: "Ultra Deluxe", type: "Non-AC", departure: "5:00 AM", arrival: "8:30 AM", fare: 400 },
-  { id: 5, name: "Vennela", type: "AC", departure: "7:30 PM", arrival: "6:00 AM", fare: 600 },
-  { id: 6, name: "Super Luxury", type: "AC", departure: "8:00 PM", arrival: "5:00 AM", fare: 500 },
-  { id: 7, name: "Express", type: "Non-AC", departure: "9:00 PM", arrival: "6:30 AM", fare: 480 },
-  { id: 8, name: "Telangana Express", type: "Non-AC", departure: "6:30 PM", arrival: "5:00 AM", fare: 600 },
-  { id: 9, name: "Krishna Express", type: "AC", departure: "7:00 PM", arrival: "5:30 AM", fare: 530 },
-  { id: 10, name: "Tirupati Rajadhani", type: "Non-AC", departure: "6:00 PM", arrival: "9:00 PM", fare: 200 },
+  { id: 1, name: "Garuda", type: "AC", departure: "9:00 PM", arrival: "6:00 AM", fare: 500 , from: "Hyderabad", to: "Vijayawada"},
+  { id: 2, name: "Garuda Plus", type: "Non-AC", departure: "6:00 AM", arrival: "2:00 PM", fare: 600 ,  from: "Hyderabad", to: "Tirupati"},
+  { id: 3, name: "Amaravati", type: "AC", departure: "5:00 PM", arrival: "11:00 PM", fare: 550 , from: "Vijayawada", to: "Rajampet"},
+  { id: 4, name: "Ultra Deluxe", type: "Non-AC", departure: "5:00 AM", arrival: "8:30 AM", fare: 400 , from: "Tirupati", to: "Rajampet",},
+  { id: 5, name: "Vennela", type: "AC", departure: "7:30 PM", arrival: "6:00 AM", fare: 600 ,  from: "Hyderabad", to: "Rajampet"},
+  { id: 6, name: "Super Luxury", type: "AC", departure: "8:00 PM", arrival: "5:00 AM", fare: 500 , from: "Vijayawada", to: "Hyderabad"},
+  { id: 7, name: "Express", type: "Non-AC", departure: "9:00 PM", arrival: "6:30 AM", fare: 480 , from: "Vijayawada", to: "Tirupati" },
+  { id: 8, name: "Telangana Express", type: "Non-AC", departure: "6:30 PM", arrival: "5:00 AM", fare: 600 , from: "Rajampet", to: "Hyderabad"},
+  { id: 9, name: "Krishna Express", type: "AC", departure: "7:00 PM", arrival: "5:30 AM", fare: 530 , from: "Rajampet", to: "Vijayawada"},
+  { id: 10, name: "Tirupati Rajadhani", type: "Non-AC", departure: "6:00 PM", arrival: "9:00 PM", fare: 200 , from: "Rajampet", to: "Tirupati"},
 ];
 const LS_KEY = "bookedSeatsByBus";
 function loadBookedSeats() {
