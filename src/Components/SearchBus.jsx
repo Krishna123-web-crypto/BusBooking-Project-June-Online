@@ -9,7 +9,7 @@ const busTypes = ["All Types", "AC", "Non-AC", "Ultra Deluxe", "Express" ];
 const sampleBuses = [
   {
     id: 1,
-    name: "TSRTC Express",
+    name: "Garuda",
     type: "AC",
     from: "Hyderabad",
     to: "Vijayawada",
@@ -30,7 +30,7 @@ const sampleBuses = [
   },
   {
     id: 2,
-    name: "APSRTC ULTRA Deluxe",
+    name: "Garuda Plus",
     type: "Non-AC",
     from: "Hyderabad",
     to: "Tirupati",
@@ -53,7 +53,7 @@ const sampleBuses = [
   },
   {
     id: 3,
-    name: "Apsrtc Ultra Deluxe",
+    name: "Amaravati",
     type: "AC",
     from: "Vijayawada",
     to: "Rajampet",
@@ -73,7 +73,7 @@ const sampleBuses = [
   },
   {
     id: 4,
-    name: "Apsrtc Express",
+    name: "Ultra Deluxe",
     type: "Non-AC",
     from: "Tirupati",
     to: "Rajampet",
@@ -93,7 +93,7 @@ const sampleBuses = [
   },
   {
   id: 5,
-  name: "APSRTC Ultra Deluxe",
+  name: "Vennela",
   type: "AC",
   from: "Hyderabad",
   to: "Rajampet",
@@ -113,8 +113,8 @@ const sampleBuses = [
   ],
 },
 {
-  id: 4,
-  name: "APSRTC Express",
+  id: 6,
+  name: "Super Luxury",
   type: "AC",
   from: "Vijayawada",
   to: "Hyderabad",
@@ -134,8 +134,8 @@ const sampleBuses = [
   ],
 },
 {
-  id: 5,
-  name: "APSRTC Express",
+  id: 7,
+  name: "Express",
   type: "Non-AC",
   from: "Vijayawada",
   to: "Tirupati",
@@ -155,8 +155,8 @@ const sampleBuses = [
   ],
 },
 {
-  id: 6,
-  name: "APSRTC Express",
+  id: 8,
+  name: "Telangana Express",
   type: "Non-AC",
   from: "Rajampet",
   to: "Hyderabad",
@@ -176,8 +176,8 @@ const sampleBuses = [
   ],
 },
 {
-  id: 7,
-  name: "APSRTC Ultra Deluxe",
+  id: 9,
+  name: "Krishna Express",
   type: "AC",
   from: "Rajampet",
   to: "Vijayawada",
@@ -196,8 +196,8 @@ const sampleBuses = [
   ],
 },
 {
-  id: 8,
-  name: "APSRTC Pallevelugu",
+  id: 10,
+  name: "Tirupati Rajadhani",
   type: "Non-AC",
   from: "Rajampet",
   to: "Tirupati",
