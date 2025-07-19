@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../assets/NavBar.css";
 import { AuthContext } from "./Context/AuthContext";
 export default function NavBar() {
-  const { isLoggedIn, user, logout } = useContext(AuthContext);
+  const { user, isLoggedIn, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleSignOut = () => {
     logout();
@@ -25,14 +25,8 @@ export default function NavBar() {
           {isLoggedIn ? (
             <>
               <li><Link to="/booking" className="nav-item">Booking</Link></li>
-              {userDisplay && (
-                <li><span className="nav-user">👤 {userDisplay}</span></li>
-              )}
-              <li>
-                <button className="nav-item logout-button" onClick={handleSignOut}>
-                  Sign Out
-                </button>
-              </li>
+              {userDisplay && <li><span className="nav-user">👤 {userDisplay}</span></li>}
+              <li><button className="nav-item logout-button" onClick={handleSignOut}>Sign Out</button></li>
             </>
           ) : (
             <>
