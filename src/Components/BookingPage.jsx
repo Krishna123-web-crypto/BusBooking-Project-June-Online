@@ -19,6 +19,7 @@ function loadBookedSeats() {
     const raw = localStorage.getItem(LS_KEY);
     return raw ? JSON.parse(raw) : {};
   } catch {
+    
     return {};
   }
 }
