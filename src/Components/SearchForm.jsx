@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../assets/SearchForm.css";
-const LOCATIONS = ["Hyderabad", "Vijayawada", "Rajampet", "Tirupati", "Tirumala", "Kadapa", "Bengaluru", "Sri Kalahasti"];
+const LOCATIONS = ["Hyderabad", "Vijayawada", "Rajampet", "Tirupati", "Tirumala", "Kadapa", "Bengaluru", "Sri Kalahasti", "Rayachoti",
+];
 const BUS_TYPES = ["All", "AC", "Non-AC", "Deluxe", "Ultra Deluxe", "Express"];
 export default function SearchForm({ onSearch }) {
   const [from, setFrom] = useState("");
@@ -13,7 +14,7 @@ export default function SearchForm({ onSearch }) {
       alert("Please select all fields (From, To, Date)");
       return;
     }
-    if (from === to) {
+    if (from !== "All" && to !== "All" && from === to) {
       alert("Source and destination cannot be the same");
       return;
     }
@@ -44,8 +45,8 @@ export default function SearchForm({ onSearch }) {
           <option key={type} value={type}>{type}</option>
         ))}
       </select>
-
       <button type="submit">Search</button>
     </form>
   );
 }
+
