@@ -1,7 +1,6 @@
-// src/pages/BookingPage.jsx (example path)
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import SearchForm from "../Components/SearchForm";
-import sampleBuses from "../data/buses";   // <-- your large data file
+import sampleBuses from "../data/buses";   
 import "../assets/BookingPage.css";
 const LS_KEY = "bookedSeatsByBus_v2";
 function parseTimeTo24hHours(timeStr) {
