@@ -28,13 +28,9 @@ export default function SearchBus() {
     () => uniq([...sampleBuses.map((b) => b.from), ...sampleBuses.map((b) => b.to)]),
     []
   );
-  const busTypes = useMemo(
-    () => ["All Types", ...uniq(sampleBuses.map((b) => b.type))],
-    []
-  );
+  const busTypes = useMemo(() => ["All Types", ...uniq(sampleBuses.map((b) => b.type))], []);
   const allStops = useMemo(
-    () =>
-      uniq(sampleBuses.flatMap((bus) => bus.routeStops.map((stop) => stop.stop))).sort(),
+    () => uniq(sampleBuses.flatMap((bus) => bus.routeStops.map((stop) => stop.stop))).sort(),
     []
   );
   const [from, setFrom] = useState("");
@@ -42,7 +38,7 @@ export default function SearchBus() {
   const [typeFilter, setTypeFilter] = useState("All Types");
   const [stopFilter, setStopFilter] = useState("");
   const [results, setResults] = useState([]);
-  const [searched, setSearched] = useState(false); 
+  const [searched, setSearched] = useState(false);
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
@@ -81,50 +77,54 @@ export default function SearchBus() {
   return (
     <div className="booking-container">
       <div className="search-form">
-        <label>
-          From:
-          <select value={from} onChange={(e) => setFrom(e.target.value)}>
-            <option value="">From</option>
-            {locations.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          To:
-          <select value={to} onChange={(e) => setTo(e.target.value)}>
-            <option value="">To</option>
-            {locations.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Type:
-          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-            {busTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Stop:
-          <select value={stopFilter} onChange={(e) => setStopFilter(e.target.value)}>
-            <option value="">Filter by Stop</option>
-            {allStops.map((stop) => (
-              <option key={stop} value={stop}>
-                {stop}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button onClick={runSearch}>Search</button>
+        <div className="filters-row">
+          <label>
+            From:
+            <select value={from} onChange={(e) => setFrom(e.target.value)}>
+              <option value="">From</option>
+              {locations.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            To:
+            <select value={to} onChange={(e) => setTo(e.target.value)}>
+              <option value="">To</option>
+              {locations.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Type:
+            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+              {busTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Stop:
+            <select value={stopFilter} onChange={(e) => setStopFilter(e.target.value)}>
+              <option value="">Filter by Stop</option>
+              {allStops.map((stop) => (
+                <option key={stop} value={stop}>
+                  {stop}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="search-button-wrapper">
+          <button onClick={runSearch}>Search</button>
+        </div>
       </div>
       {searched && Object.keys(groupedResults).length === 0 && results.length === 0 && (
         <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
@@ -137,7 +137,7 @@ export default function SearchBus() {
             const center = bus.routeStops?.[0]
               ? [bus.routeStops[0].lat, bus.routeStops[0].lng]
               : [17.385, 78.4867];
-              return (
+            return (
               <div key={bus.id} className="bus-card">
                 <h4>{bus.name}</h4>
                 <p>
@@ -182,5 +182,3 @@ export default function SearchBus() {
     </div>
   );
 }
-
-
