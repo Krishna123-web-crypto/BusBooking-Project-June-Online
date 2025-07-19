@@ -1348,7 +1348,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "11:30 AM",
   fare: 450,
-  totalSeats: 40,
+  totalSeats: 36,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "6:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -1369,7 +1369,7 @@ const sampleBuses = [
   departure: "4:00 PM",
   arrival: "9:30 PM",
   fare: 400,
-  totalSeats: 40,
+  totalSeats: 36,
   bookedSeats: [],
   routeStops: [
     { stop: "Bengaluru", time: "4:00 PM", lat: 12.9716, lng: 77.5946 },
