@@ -1,26 +1,26 @@
 const sampleBuses = [
-  {
-    id: 1,
-    name: "Garuda",
-    type: "AC",
-    from: "Hyderabad",
-    to: "Vijayawada",
-    departure: "9:00 PM",
-    arrival: "6:00 AM",
-    fare: 500,
-    totalSeats: 36,
-    bookedSeats: [],
-    routeStops: [
-      { stop: "Hyderabad", time: "9:00 PM", lat: 17.385, lng: 78.4867 },
-      { stop: "LB Nagar", time: "9:30 PM", lat: 17.35, lng: 78.5667 },
-      { stop: "Nalgonda", time: "10:30 PM", lat: 17.05, lng: 79.27 },
-      { stop: "Kodad", time: "12:00 AM", lat: 16.99, lng: 79.97 },
-      { stop: "Suryapet", time: "12:45 AM", lat: 17.14, lng: 79.62 },
-      { stop: "Khammam", time: "2:00 AM", lat: 17.2473, lng: 80.1514 },
-      { stop: "Vijayawada", time: "6:00 AM", lat: 16.5062, lng: 80.648 },
-    ],
-  },
-  {
+{
+  id: 1,
+  name: "Garuda",
+  type: "AC",
+  from: "Hyderabad",
+  to: "Vijayawada",
+  departure: "9:00 PM",
+  arrival: "1:46 AM",  // 4hr 46min later
+  fare: 500,
+  totalSeats: 36,
+  bookedSeats: [],
+  routeStops: [
+    { stop: "Hyderabad", time: "9:00 PM", lat: 17.385, lng: 78.4867 },
+    { stop: "LB Nagar", time: "9:20 PM", lat: 17.35, lng: 78.5667 },
+    { stop: "Nalgonda", time: "10:20 PM", lat: 17.05, lng: 79.27 },
+    { stop: "Suryapet", time: "11:15 PM", lat: 17.14, lng: 79.62 },
+    { stop: "Kodad", time: "11:45 PM", lat: 16.99, lng: 79.97 },
+    { stop: "Khammam", time: "12:30 AM", lat: 17.2473, lng: 80.1514 },
+    { stop: "Vijayawada", time: "1:46 AM", lat: 16.5062, lng: 80.648 },
+  ],
+},
+{
     id: 2,
     name: "Garuda Plus",
     type: "Non-AC",
