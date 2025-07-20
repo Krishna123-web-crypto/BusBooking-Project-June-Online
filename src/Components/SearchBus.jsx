@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../assets/SearchBus.css";
 import BusTimeline from "./BusTimeline";
-import LiveBusTracker from "./LiveBustracker";
+import MapModal from "../Components/MapModal";
 import sampleBuses from "../data/buses";
 const uniq = (arr) => [...new Set(arr)];
 function parseTimeTo24hHours(timeStr) {
@@ -12,9 +11,8 @@ function parseTimeTo24hHours(timeStr) {
   let [_, h, m, mer] = match;
   let hours = parseInt(h, 10);
   const minutes = m ? parseInt(m, 10) : 0;
-  const upper = mer.toUpperCase();
-  if (upper === "PM" && hours !== 12) hours += 12;
-  if (upper === "AM" && hours === 12) hours = 0;
+  if (mer.toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (mer.toUpperCase() === "AM" && hours === 12) hours = 0;
   return hours + minutes / 60;
 }
 function isOvernight(departure, arrival) {
@@ -29,36 +27,26 @@ export default function SearchBus() {
     []
   );
   const busTypes = useMemo(() => ["All Types", ...uniq(sampleBuses.map((b) => b.type))], []);
-  const allStops = useMemo(
-    () => uniq(sampleBuses.flatMap((bus) => bus.routeStops.map((stop) => stop.stop))).sort(),
-    []
-  );
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [typeFilter, setTypeFilter] = useState("All Types");
-  const [stopFilter, setStopFilter] = useState("");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [selectedBus, setSelectedBus] = useState(null);
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
       setResults([]);
       return;
     }
-    let filtered = sampleBuses.filter(
+    const filtered = sampleBuses.filter(
       (bus) =>
         bus.from === from &&
         bus.to === to &&
         (typeFilter === "All Types" || bus.type === typeFilter)
     );
-    if (stopFilter) {
-      const stopLower = stopFilter.toLowerCase();
-      filtered = filtered.filter((bus) =>
-        bus.routeStops?.some((s) => s.stop.toLowerCase() === stopLower)
-      );
-    }
     setResults(filtered);
-  }, [from, to, typeFilter, stopFilter]);
+  }, [from, to, typeFilter]);
   const groupedResults = useMemo(() => {
     return results.reduce((acc, bus) => {
       const routeKey = `${bus.from} → ${bus.to}`;
@@ -83,9 +71,7 @@ export default function SearchBus() {
             <select value={from} onChange={(e) => setFrom(e.target.value)}>
               <option value="">From</option>
               {locations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
+                <option key={loc} value={loc}>{loc}</option>
               ))}
             </select>
           </label>
@@ -94,9 +80,7 @@ export default function SearchBus() {
             <select value={to} onChange={(e) => setTo(e.target.value)}>
               <option value="">To</option>
               {locations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
+                <option key={loc} value={loc}>{loc}</option>
               ))}
             </select>
           </label>
@@ -104,20 +88,7 @@ export default function SearchBus() {
             Type:
             <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
               {busTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Stop:
-            <select value={stopFilter} onChange={(e) => setStopFilter(e.target.value)}>
-              <option value="">Filter by Stop</option>
-              {allStops.map((stop) => (
-                <option key={stop} value={stop}>
-                  {stop}
-                </option>
+                <option key={type} value={type}>{type}</option>
               ))}
             </select>
           </label>
@@ -126,7 +97,7 @@ export default function SearchBus() {
           <button onClick={runSearch}>Search</button>
         </div>
       </div>
-      {searched && Object.keys(groupedResults).length === 0 && results.length === 0 && (
+      {searched && Object.keys(groupedResults).length === 0 && (
         <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
       )}
       {Object.entries(groupedResults).map(([route, buses]) => (
@@ -134,51 +105,33 @@ export default function SearchBus() {
           <h3>{route}</h3>
           {buses.map((bus) => {
             const availableSeats = bus.totalSeats - bus.bookedSeats.length;
-            const center = bus.routeStops?.[0]
-              ? [bus.routeStops[0].lat, bus.routeStops[0].lng]
-              : [17.385, 78.4867];
             return (
               <div key={bus.id} className="bus-card">
                 <h4>{bus.name}</h4>
-                <p>
-                  Departure: {bus.departure} | Arrival: {bus.arrival}
-                </p>
+                <p>Departure: {bus.departure} | Arrival: {bus.arrival}</p>
                 <p>Fare: ₹{bus.fare}</p>
                 <p>Seats Available: {availableSeats}</p>
-                <p
-                  style={{
-                    color: isOvernight(bus.departure, bus.arrival) ? "red" : "green",
-                    fontWeight: "bold",
-                  }}
-                >
+                <p style={{
+                  color: isOvernight(bus.departure, bus.arrival) ? "red" : "green",
+                  fontWeight: "bold"
+                }}>
                   {isOvernight(bus.departure, bus.arrival) ? "Overnight Journey" : "Day Journey"}
                 </p>
                 <div className="stops">
                   <strong>Route Stops:</strong>
                   <BusTimeline stops={bus.routeStops} />
                 </div>
-                <MapContainer
-                  style={{ height: "200px", width: "100%", marginTop: "10px" }}
-                  center={center}
-                  zoom={7}
-                  scrollWheelZoom={false}
-                >
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <Polyline positions={bus.routeStops.map((s) => [s.lat, s.lng])} color="blue" />
-                  {bus.routeStops.map((stop, i) => (
-                    <Marker key={i} position={[stop.lat, stop.lng]}>
-                      <Popup>
-                        {stop.stop} - {stop.time}
-                      </Popup>
-                    </Marker>
-                  ))}
-                  <LiveBusTracker bus={bus} />
-                </MapContainer>
+                <button onClick={() => setSelectedBus(bus)} className="open-map-btn">
+                  Open Map
+                </button>
               </div>
             );
           })}
         </div>
       ))}
+      {selectedBus && (
+        <MapModal bus={selectedBus} onClose={() => setSelectedBus(null)} />
+      )}
     </div>
   );
 }
