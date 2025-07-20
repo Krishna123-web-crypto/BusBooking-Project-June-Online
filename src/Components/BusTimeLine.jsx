@@ -16,9 +16,11 @@ export default function BusTimeline({ stops }) {
         {stops.map((stop, index) => (
           <TimelineItem key={index}>
             <TimelineOppositeContent
-              sx={{ flex: 0.2, fontSize: "0.9rem", color: "gray" }}
+              sx={{ flex: 0.3, fontSize: "0.9rem", color: "gray", textAlign: "right" }}
             >
-              {stop.time}
+              <Typography variant="body2" color="textSecondary">
+                ETA: {stop.time}
+              </Typography>
             </TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot color="primary" />

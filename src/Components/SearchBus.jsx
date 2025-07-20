@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
 import "../assets/SearchBus.css";
-import BusTimeline from "./BusTimeline";
+import BusTimeline from "../Components/BusTimeline";
 import MapModal from "../Components/MapModal";
 import sampleBuses from "../data/buses";
 const uniq = (arr) => [...new Set(arr)];
