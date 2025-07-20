@@ -1451,7 +1451,89 @@ const sampleBuses = [
     { stop: "Piler", time: "10:00 AM", lat: 13.7190, lng: 78.9504 },
     { stop: "Kalikiri", time: "10:30 AM", lat: 13.5502, lng: 78.8743 },
     { stop: "Rayachoti", time: "12:15 PM", lat: 14.0561, lng: 78.7510 }
-  ]
-}
+  ],
+},
+{
+  id: 76,
+  name: "Rayachoti Tirupati Express",
+  type: "Non-AC",
+  from: "Rayachoti",
+  to: "Tirupati",
+  departure: "2:00 PM",
+  arrival: "6:30 PM",
+  fare: 400,
+  totalSeats: 36,
+  bookedSeats: [],
+  routeStops: [
+    { stop: "Rayachoti", time: "2:00 PM", lat: 14.0561, lng: 78.7510 },
+    { stop: "Kalikiri", time: "2:45 PM", lat: 13.5502, lng: 78.8743 },
+    { stop: "Piler", time: "3:15 PM", lat: 13.7190, lng: 78.9504 },
+    { stop: "Chintaparthi", time: "3:45 PM", lat: 13.7400, lng: 79.0400 },
+    { stop: "Chandragiri", time: "4:30 PM", lat: 13.5890, lng: 79.3189 },
+    { stop: "Tiruchanur", time: "5:30 PM", lat: 13.6355, lng: 79.4301 },
+    { stop: "Tirupati", time: "6:30 PM", lat: 13.6288, lng: 79.4192 }
+  ],
+},
+{
+  id: 77,
+  name: "Tirupati Rayachoti Express",
+  type: "Non-AC",
+  from: "Tirupati",
+  to: "Rayachoti",
+  departure: "7:00 AM",
+  arrival: "11:30 AM",
+  fare: 400,
+  totalSeats: 36,
+  bookedSeats: [],
+  routeStops: [
+    { stop: "Tirupati", time: "7:00 AM", lat: 13.6288, lng: 79.4192 },
+    { stop: "Tiruchanur", time: "7:15 AM", lat: 13.6355, lng: 79.4301 },
+    { stop: "Chandragiri", time: "8:00 AM", lat: 13.5890, lng: 79.3189 },
+    { stop: "Chintaparthi", time: "8:45 AM", lat: 13.7400, lng: 79.0400 },
+    { stop: "Piler", time: "9:15 AM", lat: 13.7190, lng: 78.9504 },
+    { stop: "Kalikiri", time: "9:45 AM", lat: 13.5502, lng: 78.8743 },
+    { stop: "Rayachoti", time: "11:30 AM", lat: 14.0561, lng: 78.7510 }
+  ],
+},
+{
+  id: 78,
+  name: "Rajampet Nellore Express",
+  type: "Non-AC",
+  from: "Rajampet",
+  to: "Nellore",
+  departure: "6:30 AM",
+  arrival: "11:15 AM",
+  fare: 380,
+  totalSeats: 36,
+  bookedSeats: [],
+  routeStops: [
+    { stop: "Rajampet", time: "6:30 AM", lat: 14.1959, lng: 79.1590 },
+    { stop: "Nandalur", time: "6:45 AM", lat: 14.2050, lng: 79.1310 },
+    { stop: "Obulavaripalle", time: "7:15 AM", lat: 14.2281, lng: 79.0647 },
+    { stop: "Rapur", time: "8:30 AM", lat: 14.2050, lng: 79.4000 },
+    { stop: "Atmakur", time: "9:30 AM", lat: 14.6050, lng: 79.4200 },
+    { stop: "Nellore", time: "11:15 AM", lat: 14.4426, lng: 79.9865 }
+  ],
+},
+{
+  id: 79,
+  name: "Nellore Rajampet Express",
+  type: "Non-AC",
+  from: "Nellore",
+  to: "Rajampet",
+  departure: "3:00 PM",
+  arrival: "7:45 PM",
+  fare: 380,
+  totalSeats: 36,
+  bookedSeats: [],
+  routeStops: [
+    { stop: "Nellore", time: "3:00 PM", lat: 14.4426, lng: 79.9865 },
+    { stop: "Atmakur", time: "4:15 PM", lat: 14.6050, lng: 79.4200 },
+    { stop: "Rapur", time: "5:15 PM", lat: 14.2050, lng: 79.4000 },
+    { stop: "Obulavaripalle", time: "6:30 PM", lat: 14.2281, lng: 79.0647 },
+    { stop: "Nandalur", time: "7:15 PM", lat: 14.2050, lng: 79.1310 },
+    { stop: "Rajampet", time: "7:45 PM", lat: 14.1959, lng: 79.1590 }
+  ],
+},
 ];
 export default sampleBuses;
