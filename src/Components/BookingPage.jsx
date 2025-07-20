@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import SearchForm from "../Components/SearchForm";
-import sampleBuses from "../data/buses";   
+import sampleBuses from "../data/buses";
 import "../assets/BookingPage.css";
 const LS_KEY = "bookedSeatsByBus_v2";
 function parseTimeTo24hHours(timeStr) {
@@ -43,10 +43,10 @@ function saveBookedSeats(obj) {
 }
 export default function BookingPage() {
   const [filteredBuses, setFilteredBuses] = useState([]);
-  const [journeyDetails, setJourneyDetails] = useState(null); 
+  const [journeyDetails, setJourneyDetails] = useState(null);
   const [selectedBus, setSelectedBus] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [bookedSeatsLS, setBookedSeatsLS] = useState(() => loadBookedSeats()); 
+  const [bookedSeatsLS, setBookedSeatsLS] = useState(() => loadBookedSeats());
   const [passengerName, setPassengerName] = useState("");
   const [passengerEmail, setPassengerEmail] = useState("");
   const [passengerPhone, setPassengerPhone] = useState("");
@@ -58,7 +58,7 @@ export default function BookingPage() {
   }, [bookedSeatsLS]);
   const handleSearch = useCallback(({ from, to, date, busType }) => {
     setSearchPerformed(true);
-    let results = sampleBuses.filter(
+    const results = sampleBuses.filter(
       (b) =>
         b.from === from &&
         b.to === to &&
@@ -80,15 +80,14 @@ export default function BookingPage() {
     const stored = new Set(bookedSeatsLS[selectedBus.id] || []);
     return new Set([...dataset, ...stored]);
   }, [selectedBus, bookedSeatsLS]);
-  const isSeatBooked = (seat) =>
-    effectiveBookedForSelectedBus.has(seat);
-  function toggleSeat(seat) {
+  const isSeatBooked = (seat) => effectiveBookedForSelectedBus.has(seat);
+  const toggleSeat = (seat) => {
     setSelectedSeats((prev) =>
       prev.includes(seat)
         ? prev.filter((s) => s !== seat)
         : [...prev, seat]
     );
-  }
+  };
   const seatRows = useMemo(() => {
     if (!selectedBus) return [];
     const total = selectedBus.totalSeats || 36;
@@ -102,13 +101,13 @@ export default function BookingPage() {
     }
     return rows;
   }, [selectedBus]);
-  function handleSelectBus(bus) {
+  const handleSelectBus = (bus) => {
     setSelectedBus(bus);
     setSelectedSeats([]);
     setShowPayment(false);
     setPaymentMethod("");
-  }
-  function handleProceedToPayment() {
+  };
+  const handleProceedToPayment = () => {
     if (
       !selectedBus ||
       !passengerName.trim() ||
@@ -120,8 +119,8 @@ export default function BookingPage() {
       return;
     }
     setShowPayment(true);
-  }
-  function handleConfirmBooking() {
+  };
+  const handleConfirmBooking = () => {
     if (!paymentMethod) {
       alert("Select a payment method.");
       return;
@@ -143,13 +142,13 @@ Payment: ${paymentMethod}`
     setSelectedSeats([]);
     setShowPayment(false);
     setPaymentMethod("");
-  }
-  function handleChangeBus() {
+  };
+  const handleChangeBus = () => {
     setSelectedBus(null);
     setSelectedSeats([]);
     setShowPayment(false);
     setPaymentMethod("");
-  }
+  };
   const noResultMessage = useMemo(() => {
     if (!journeyDetails) return "";
     if (filteredBuses.length === 0)
@@ -161,7 +160,7 @@ Payment: ${paymentMethod}`
       <SearchForm onSearch={handleSearch} />
       {!selectedBus && searchPerformed && (
         <div className="results-section">
-          <h2 style={{ marginTop: "1rem" }}>Available Buses</h2>
+          <h2>Available Buses</h2>
           {journeyDetails && (
             <p className="journey-summary">
               {journeyDetails.from} → {journeyDetails.to} on{" "}
@@ -175,38 +174,25 @@ Payment: ${paymentMethod}`
             {filteredBuses.map((bus) => {
               const datasetTaken = bus.bookedSeats?.length || 0;
               const userTaken = (bookedSeatsLS[bus.id] || []).length;
-              const totalTaken = datasetTaken + userTaken;
-              const available = (bus.totalSeats || 36) - totalTaken;
+              const available = (bus.totalSeats || 36) - (datasetTaken + userTaken);
               return (
                 <div key={bus.id} className="bus-card">
                   <div className="bus-card-head">
                     <h3>
                       {bus.name} <span className="bus-type">({bus.type})</span>
                     </h3>
-                    <span
-                      className={
-                        "overnight-tag " +
-                        (isOvernight(bus.departure, bus.arrival)
-                          ? "overnight"
-                          : "day")
-                      }
-                    >
-                      {isOvernight(bus.departure, bus.arrival)
-                        ? "Overnight"
-                        : "Day"}
+                    <span className={`overnight-tag ${isOvernight(bus.departure, bus.arrival) ? "overnight" : "day"}`}>
+                      {isOvernight(bus.departure, bus.arrival) ? "Overnight" : "Day"}
                     </span>
                   </div>
                   <p>
                     {bus.departure} - {bus.arrival}{" "}
-                    <span className="duration">
-                      {calcDuration(bus.departure, bus.arrival)}
-                    </span>
+                    <span className="duration">{calcDuration(bus.departure, bus.arrival)}</span>
                   </p>
                   <p>
                     Fare: <strong>₹{bus.fare}</strong> | Seats Available:{" "}
                     <strong>{available}</strong> / {bus.totalSeats || 36}
                   </p>
-                  {/* Collapsible route stops */}
                   {bus.routeStops && (
                     <details className="stops-details">
                       <summary>Route Stops ({bus.routeStops.length})</summary>
@@ -220,10 +206,7 @@ Payment: ${paymentMethod}`
                       </ul>
                     </details>
                   )}
-                  <button
-                    disabled={available <= 0}
-                    onClick={() => handleSelectBus(bus)}
-                  >
+                  <button disabled={available <= 0} onClick={() => handleSelectBus(bus)}>
                     {available > 0 ? "Select Bus" : "Sold Out"}
                   </button>
                 </div>
@@ -235,38 +218,20 @@ Payment: ${paymentMethod}`
       {selectedBus && journeyDetails && (
         <div className="seat-booking-section">
           <div className="seat-header">
-            <h2>
-              {selectedBus.name} ({selectedBus.type}) – Seat Selection
-            </h2>
-            <button className="back-btn" onClick={handleChangeBus}>
-              ← Back to results
-            </button>
+            <h2>{selectedBus.name} ({selectedBus.type}) – Seat Selection</h2>
+            <button className="back-btn" onClick={handleChangeBus}>← Back to results</button>
           </div>
           <div className="journey-info">
-            <p>
-              <strong>Route:</strong> {journeyDetails.from} →{" "}
-              {journeyDetails.to} on {journeyDetails.date}
-            </p>
-            <p>
-              <strong>Timing:</strong> {selectedBus.departure} –{" "}
-              {selectedBus.arrival}{" "}
-              <span className="duration">
-                {calcDuration(selectedBus.departure, selectedBus.arrival)}
-              </span>
-            </p>
-            <p>
-              <strong>Fare / Seat:</strong> ₹{selectedBus.fare}
-            </p>
+            <p><strong>Route:</strong> {journeyDetails.from} → {journeyDetails.to} on {journeyDetails.date}</p>
+            <p><strong>Timing:</strong> {selectedBus.departure} – {selectedBus.arrival} <span className="duration">{calcDuration(selectedBus.departure, selectedBus.arrival)}</span></p>
+            <p><strong>Fare / Seat:</strong> ₹{selectedBus.fare}</p>
           </div>
           {selectedBus.routeStops && (
             <details className="stops-details wide">
               <summary>View Route Stops</summary>
               <ol className="stops-list numbered">
                 {selectedBus.routeStops.map((s, i) => (
-                  <li key={i}>
-                    <span>{s.stop}</span>{" "}
-                    <small style={{ color: "#555" }}>{s.time}</small>
-                  </li>
+                  <li key={i}><span>{s.stop}</span> <small style={{ color: "#555" }}>{s.time}</small></li>
                 ))}
               </ol>
             </details>
@@ -275,7 +240,7 @@ Payment: ${paymentMethod}`
             {seatRows.map((row, idx) => {
               const isLast = idx === seatRows.length - 1;
               const left = !isLast ? row.slice(0, 2) : [];
-              const right = !isLast ? row.slice(2) : row; 
+              const right = !isLast ? row.slice(2) : row;
               return (
                 <div key={idx} className="seat-row">
                   {!isLast && (
@@ -286,11 +251,7 @@ Payment: ${paymentMethod}`
                         return (
                           <button
                             key={seat}
-                            className={
-                              "seat" +
-                              (booked ? " booked" : "") +
-                              (sel ? " selected" : "")
-                            }
+                            className={`seat${booked ? " booked" : ""}${sel ? " selected" : ""}`}
                             onClick={() => !booked && toggleSeat(seat)}
                             disabled={booked}
                           >
@@ -301,18 +262,14 @@ Payment: ${paymentMethod}`
                     </div>
                   )}
                   {!isLast && <div className="aisle" />}
-                  <div className={"seat-pair" + (isLast ? " last-row" : "")}>
+                  <div className={`seat-pair${isLast ? " last-row" : ""}`}>
                     {right.map((seat) => {
                       const booked = isSeatBooked(seat);
                       const sel = selectedSeats.includes(seat);
                       return (
                         <button
                           key={seat}
-                          className={
-                            "seat" +
-                            (booked ? " booked" : "") +
-                            (sel ? " selected" : "")
-                          }
+                          className={`seat${booked ? " booked" : ""}${sel ? " selected" : ""}`}
                           onClick={() => !booked && toggleSeat(seat)}
                           disabled={booked}
                         >
@@ -328,43 +285,16 @@ Payment: ${paymentMethod}`
           <div className="passenger-box">
             <h3>Passenger Details</h3>
             <div className="passenger-grid">
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={passengerName}
-                onChange={(e) => setPassengerName(e.target.value)}
-                required
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={passengerEmail}
-                onChange={(e) => setPassengerEmail(e.target.value)}
-                required
-              />
-              <input
-                type="tel"
-                placeholder="Phone"
-                value={passengerPhone}
-                onChange={(e) => setPassengerPhone(e.target.value)}
-                required
-              />
+              <input type="text" placeholder="Full Name" value={passengerName} onChange={(e) => setPassengerName(e.target.value)} required />
+              <input type="email" placeholder="Email" value={passengerEmail} onChange={(e) => setPassengerEmail(e.target.value)} required />
+              <input type="tel" placeholder="Phone" value={passengerPhone} onChange={(e) => setPassengerPhone(e.target.value)} required />
             </div>
           </div>
           <div className="summary-box">
-            <p>
-              <strong>Selected Seats:</strong>{" "}
-              {selectedSeats.length ? selectedSeats.join(", ") : "None"}
-            </p>
-            <p>
-              <strong>Total:</strong> ₹{selectedSeats.length * selectedBus.fare}
-            </p>
+            <p><strong>Selected Seats:</strong> {selectedSeats.length ? selectedSeats.join(", ") : "None"}</p>
+            <p><strong>Total:</strong> ₹{selectedSeats.length * selectedBus.fare}</p>
             {!showPayment && (
-              <button
-                className="proceed-btn"
-                onClick={handleProceedToPayment}
-                disabled={selectedSeats.length === 0}
-              >
+              <button className="proceed-btn" onClick={handleProceedToPayment} disabled={selectedSeats.length === 0}>
                 Proceed to Payment
               </button>
             )}
@@ -380,7 +310,7 @@ Payment: ${paymentMethod}`
                         value={m}
                         checked={paymentMethod === m}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                      />{" "}
+                      />
                       {m}
                     </label>
                   ))}
@@ -389,7 +319,8 @@ Payment: ${paymentMethod}`
                   className="confirm-btn"
                   onClick={handleConfirmBooking}
                   disabled={!paymentMethod}
-                >Confirm & Pay ₹{selectedSeats.length * selectedBus.fare}
+                >
+                  Confirm & Pay ₹{selectedSeats.length * selectedBus.fare}
                 </button>
               </div>
             )}
