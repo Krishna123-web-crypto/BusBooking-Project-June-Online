@@ -32,7 +32,7 @@ export default function SearchBus() {
   const [typeFilter, setTypeFilter] = useState("All Types");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
-  const [selectedBuses, setSelectedBuses] = useState([]);
+  const [selectedBus, setSelectedBus] = useState(null);
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
@@ -47,7 +47,6 @@ export default function SearchBus() {
     );
     setResults(filtered);
   }, [from, to, typeFilter]);
-
   const groupedResults = useMemo(() => {
     return results.reduce((acc, bus) => {
       const routeKey = `${bus.from} → ${bus.to}`;
@@ -132,17 +131,15 @@ export default function SearchBus() {
                   {isOvernight(bus.departure, bus.arrival) ? "Overnight Journey" : "Day Journey"}
                 </p>
                 <BusTimeline stops={bus.routeStops} />
+                <button onClick={() => setSelectedBus(bus)} className="open-map-btn">
+                  Open Map
+                </button>
               </div>
             );
           })}
-          <button onClick={() => setSelectedBuses(buses)} className="open-map-btn">
-            Open Map
-          </button>
         </div>
       ))}
-      {selectedBuses.length > 0 && (
-        <MapModal buses={selectedBuses} onClose={() => setSelectedBuses([])} />
-      )}
+      {selectedBus && <MapModal buses={[selectedBus]} onClose={() => setSelectedBus(null)} />}
     </div>
   );
 }
