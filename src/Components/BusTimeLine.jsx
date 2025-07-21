@@ -1,39 +1,23 @@
 import React from "react";
-import {
-  Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
-  TimelineOppositeContent,
-} from "@mui/lab";
-import { Typography, Paper } from "@mui/material";
+import "../assets/BusTimeline.css";
 export default function BusTimeline({ stops }) {
   return (
-    <Paper elevation={3} sx={{ p: 2, mt: 2, borderRadius: 2 }}>
-      <Timeline position="right">
-        {stops.map((stop, index) => (
-          <TimelineItem key={index}>
-            <TimelineOppositeContent
-              sx={{ flex: 0.3, fontSize: "0.9rem", color: "gray", textAlign: "right" }}
-            >
-              <Typography variant="body2" color="textSecondary">
-                ETA: {stop.time}
-              </Typography>
-            </TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="primary" />
-              {index < stops.length - 1 && <TimelineConnector />}
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "6px", px: 2 }}>
-              <Typography variant="body1" fontWeight={500}>
-                {stop.stop}
-              </Typography>
-            </TimelineContent>
-          </TimelineItem>
-        ))}
-      </Timeline>
-    </Paper>
+    <div className="timeline-container">
+      {stops.map((stop, index) => (
+        <div className="timeline-item" key={index}>
+          {/* ETA Time */}
+          <div className="timeline-time">
+            {stop.time ? stop.time : "--"}
+          </div>
+          <div className="timeline-line-wrapper">
+            <span className="dot"></span>
+            {index !== stops.length - 1 && <span className="line"></span>}
+          </div>
+          <div className="timeline-stop">
+            {stop.stop}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }

@@ -6,7 +6,7 @@ const sampleBuses = [
   from: "Hyderabad",
   to: "Vijayawada",
   departure: "9:00 PM",
-  arrival: "1:46 AM",  // 4hr 46min later
+  arrival: "1:46 AM",  
   fare: 500,
   totalSeats: 36,
   bookedSeats: [],
@@ -127,7 +127,7 @@ const sampleBuses = [
 },
 {
   id: 7,
-  name: "Express",
+  name: "Vijayawada Express",
   type: "Non-AC",
   from: "Vijayawada",
   to: "Tirupati",
