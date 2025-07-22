@@ -3,6 +3,7 @@ import "leaflet/dist/leaflet.css";
 import "../assets/SearchBus.css";
 import TripDetails from "../Components/TripDetails";
 import sampleBuses from "../data/buses";
+import MapModal from "../Components/MapModal"; // ✅ import the modal
 const uniq = (arr) => [...new Set(arr)];
 function parseTimeTo24hHours(timeStr) {
   const match = timeStr.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
@@ -34,6 +35,8 @@ export default function SearchBus() {
   const [typeFilter, setTypeFilter] = useState("All Types");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false); 
+  const [selectedBus, setSelectedBus] = useState(null);     
   const resultsRef = useRef(null);
   const runSearch = useCallback(() => {
     setSearched(true);
@@ -66,7 +69,8 @@ export default function SearchBus() {
     return "No buses found for the selected route.";
   }, [from, to]);
   const handleOpenMap = (bus) => {
-    alert(`Open map for: ${bus.name}`);
+    setSelectedBus(bus);
+    setShowMapModal(true);
   };
   return (
     <div className="booking-container">
@@ -167,6 +171,15 @@ export default function SearchBus() {
           </div>
         ))}
       </div>
+      {showMapModal && selectedBus && (
+        <MapModal
+          buses={[selectedBus]}
+          onClose={() => {
+            setShowMapModal(false);
+            setSelectedBus(null);
+          }}
+        />
+      )}
     </div>
   );
 }
