@@ -38,7 +38,6 @@ export default function SearchBus() {
   const [showMapModal, setShowMapModal] = useState(false); 
   const [selectedBus, setSelectedBus] = useState(null);     
   const resultsRef = useRef(null);
-
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
@@ -54,7 +53,6 @@ export default function SearchBus() {
     setResults(filtered);
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [from, to, typeFilter]);
-
   const groupedResults = useMemo(() => {
     return results.reduce((acc, bus) => {
       const routeKey = `${bus.from} → ${bus.to}`;
@@ -63,7 +61,6 @@ export default function SearchBus() {
       return acc;
     }, {});
   }, [results]);
-
   const noResultMessage = useMemo(() => {
     if (!from && !to) return "Please select 'From' and 'To' locations.";
     if (from && !to) return "Please select a destination.";
@@ -71,12 +68,10 @@ export default function SearchBus() {
     if (from === to && from) return "'From' and 'To' cannot be the same.";
     return "No buses found for the selected route.";
   }, [from, to]);
-
   const handleOpenMap = (bus) => {
     setSelectedBus(bus);
     setShowMapModal(true);
   };
-
   return (
     <div className="booking-container">
       <div className="search-form">
