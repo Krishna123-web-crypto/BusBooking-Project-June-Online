@@ -55,11 +55,12 @@ export default function BookingPage() {
   const [passengerPhone, setPassengerPhone] = useState("");
   const [passengerAge, setPassengerAge] = useState("");
   const [passengerGender, setPassengerGender] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  const [upiApp, setUpiApp] = useState("");
   const [showPayment, setShowPayment] = useState(false);
   const [boardingPoint, setBoardingPoint] = useState("");
   const [droppingPoint, setDroppingPoint] = useState("");
   const [searchPerformed, setSearchPerformed] = useState(false);
+
   useEffect(() => {
     saveBookedSeats(bookedSeatsLS);
   }, [bookedSeatsLS]);
@@ -103,8 +104,8 @@ export default function BookingPage() {
     setShowPayment(true);
   };
   const handleConfirmBooking = () => {
-    if (!paymentMethod) {
-      alert("Please select payment method.");
+    if (!upiApp) {
+      alert("Please select a UPI app.");
       return;
     }
     const splitFare = calculateSplitFare(selectedBus, boardingPoint, droppingPoint);
@@ -123,7 +124,7 @@ Dropping: ${droppingPoint}
 Passenger: ${passengerName} | Age: ${passengerAge} | Gender: ${passengerGender}
 Seats: ${selectedSeats.join(", ")}
 Total: ₹${total}
-Payment: ${paymentMethod}`);
+Payment: ${upiApp}`);
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
@@ -132,7 +133,7 @@ Payment: ${paymentMethod}`);
     setPassengerGender("");
     setBoardingPoint("");
     setDroppingPoint("");
-    setPaymentMethod("");
+    setUpiApp("");
     setShowPayment(false);
   };
   const renderSeatLayout = () => {
@@ -276,15 +277,23 @@ Payment: ${paymentMethod}`);
             ) : (
               <div className="payment-section">
                 <label>
-                  Select Payment Method:
-                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                    <option value="">--Choose--</option>
-                    <option value="UPI">UPI</option>
-                    <option value="Card">Card</option>
-                    <option value="Cash">Cash</option>
+                  Select UPI App:
+                  <select
+                    value={upiApp}
+                    onChange={(e) => setUpiApp(e.target.value)}
+                  >
+                    <option value="">--Choose UPI App--</option>
+                    <option value="PhonePe">PhonePe</option>
+                    <option value="Google Pay">Google Pay</option>
+                    <option value="Paytm">Paytm</option>
                   </select>
                 </label>
-                <button onClick={handleConfirmBooking}>Confirm Booking</button>
+                <button
+                  onClick={handleConfirmBooking}
+                  style={{marginTop: "1rem"}}
+                >
+                  Pay
+                </button>
               </div>
             )}
           </div>
