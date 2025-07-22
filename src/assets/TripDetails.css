@@ -4,12 +4,10 @@
   position: relative;
   padding-left: 40px;
 }
-
 .timeline-item {
   position: relative;
   padding: 10px 0;
 }
-
 .timeline-dot {
   width: 16px;
   height: 16px;
@@ -21,7 +19,6 @@
   border: 2px solid white;
   z-index: 1;
 }
-
 .timeline-item::before {
   content: "";
   position: absolute;
@@ -32,19 +29,16 @@
   background-color: #ccc;
   z-index: 0;
 }
-
 .timeline-content {
   background: #f9f9f9;
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
 }
-
 .timeline-item.active .timeline-dot {
   background-color: green;
   box-shadow: 0 0 8px green;
 }
-
 .timeline-item.active .timeline-content {
   border: 2px solid green;
   background-color: #e9fbe9;

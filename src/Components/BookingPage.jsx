@@ -9,25 +9,18 @@ function parseTimeTo24hHours(timeStr) {
   let [, h, m, mer] = match;
   let hours = parseInt(h, 10);
   const minutes = m ? parseInt(m, 10) : 0;
-  const upper = mer.toUpperCase();
-  if (upper === "PM" && hours !== 12) hours += 12;
-  if (upper === "AM" && hours === 12) hours = 0;
+  if (mer.toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (mer.toUpperCase() === "AM" && hours === 12) hours = 0;
   return hours + minutes / 60;
-}
-function isOvernight(departure, arrival) {
-  const dep = parseTimeTo24hHours(departure);
-  const arr = parseTimeTo24hHours(arrival);
-  if (dep == null || arr == null) return false;
-  return arr < dep;
 }
 function calcDuration(depStr, arrStr) {
   const dep = parseTimeTo24hHours(depStr);
   const arrRaw = parseTimeTo24hHours(arrStr);
   if (dep == null || arrRaw == null) return "";
   const arr = arrRaw < dep ? arrRaw + 24 : arrRaw;
-  const diffHrs = arr - dep;
-  const hrs = Math.floor(diffHrs);
-  const mins = Math.round((diffHrs - hrs) * 60);
+  const diff = arr - dep;
+  const hrs = Math.floor(diff);
+  const mins = Math.round((diff - hrs) * 60);
   return `${hrs}h ${mins}m${arrRaw < dep ? " (overnight)" : ""}`;
 }
 function loadBookedSeats() {
@@ -41,6 +34,16 @@ function loadBookedSeats() {
 function saveBookedSeats(obj) {
   localStorage.setItem(LS_KEY, JSON.stringify(obj));
 }
+function calculateSplitFare(bus, from, to) {
+  const stops = bus.routeStops.map((s) => s.stop);
+  const startIndex = stops.indexOf(from);
+  const endIndex = stops.indexOf(to);
+  if (startIndex === -1 || endIndex === -1 || endIndex <= startIndex) return bus.fare;
+  const segments = stops.length - 1;
+  const usedSegments = endIndex - startIndex;
+  const perSegmentFare = bus.fare / segments;
+  return Math.round(perSegmentFare * usedSegments);
+}
 export default function BookingPage() {
   const [filteredBuses, setFilteredBuses] = useState([]);
   const [journeyDetails, setJourneyDetails] = useState(null);
@@ -50,278 +53,238 @@ export default function BookingPage() {
   const [passengerName, setPassengerName] = useState("");
   const [passengerEmail, setPassengerEmail] = useState("");
   const [passengerPhone, setPassengerPhone] = useState("");
-  const [showPayment, setShowPayment] = useState(false);
+  const [passengerAge, setPassengerAge] = useState("");
+  const [passengerGender, setPassengerGender] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
+  const [boardingPoint, setBoardingPoint] = useState("");
+  const [droppingPoint, setDroppingPoint] = useState("");
   const [searchPerformed, setSearchPerformed] = useState(false);
   useEffect(() => {
     saveBookedSeats(bookedSeatsLS);
   }, [bookedSeatsLS]);
+
   const handleSearch = useCallback(({ from, to, date, busType }) => {
-    setSearchPerformed(true);
     const results = sampleBuses.filter(
-      (b) =>
-        b.from === from &&
-        b.to === to &&
-        (busType === "All" || busType === "All Types" || b.type === busType)
+      (b) => b.from === from && b.to === to && (busType === "All" || b.type === busType)
     );
     setFilteredBuses(results);
     setJourneyDetails({ from, to, date, busType });
+    setSearchPerformed(true);
     setSelectedBus(null);
     setSelectedSeats([]);
-    setPassengerName("");
-    setPassengerEmail("");
-    setPassengerPhone("");
     setShowPayment(false);
-    setPaymentMethod("");
   }, []);
-  const effectiveBookedForSelectedBus = useMemo(() => {
+  const effectiveBookedSeats = useMemo(() => {
     if (!selectedBus) return new Set();
-    const dataset = new Set(selectedBus.bookedSeats || []);
     const stored = new Set(bookedSeatsLS[selectedBus.id] || []);
-    return new Set([...dataset, ...stored]);
+    return new Set(stored);
   }, [selectedBus, bookedSeatsLS]);
-  const isSeatBooked = (seat) => effectiveBookedForSelectedBus.has(seat);
   const toggleSeat = (seat) => {
+    if (effectiveBookedSeats.has(seat)) return;
     setSelectedSeats((prev) =>
-      prev.includes(seat)
-        ? prev.filter((s) => s !== seat)
-        : [...prev, seat]
+      prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
     );
-  };
-  const seatRows = useMemo(() => {
-    if (!selectedBus) return [];
-    const total = selectedBus.totalSeats || 36;
-    const rows = [];
-    let cur = 1;
-    while (cur <= total) {
-      rows.push(
-        Array.from({ length: Math.min(4, total - cur + 1) }, (_, i) => cur + i)
-      );
-      cur += 4;
-    }
-    return rows;
-  }, [selectedBus]);
-  const handleSelectBus = (bus) => {
-    setSelectedBus(bus);
-    setSelectedSeats([]);
-    setShowPayment(false);
-    setPaymentMethod("");
   };
   const handleProceedToPayment = () => {
     if (
-      !selectedBus ||
       !passengerName.trim() ||
       !passengerEmail.trim() ||
       !passengerPhone.trim() ||
-      selectedSeats.length === 0
+      !passengerAge.trim() ||
+      !passengerGender ||
+      selectedSeats.length === 0 ||
+      !boardingPoint ||
+      !droppingPoint
     ) {
-      alert("Fill passenger info & choose at least one seat.");
+      alert("Please fill all passenger details and select seats.");
       return;
     }
     setShowPayment(true);
   };
   const handleConfirmBooking = () => {
     if (!paymentMethod) {
-      alert("Select a payment method.");
+      alert("Please select payment method.");
       return;
     }
-    const busId = selectedBus.id;
-    const prev = bookedSeatsLS[busId] || [];
-    const merged = [...new Set([...prev, ...selectedSeats])];
-    setBookedSeatsLS({ ...bookedSeatsLS, [busId]: merged });
-    alert(
-      `✅ Booking Confirmed!
+    const splitFare = calculateSplitFare(selectedBus, boardingPoint, droppingPoint);
+    const total = selectedSeats.length * splitFare;
+    const updated = {
+      ...bookedSeatsLS,
+      [selectedBus.id]: [...(bookedSeatsLS[selectedBus.id] || []), ...selectedSeats],
+    };
+    setBookedSeatsLS(updated);
+    alert(`✅ Booking Confirmed!
 Route: ${journeyDetails.from} → ${journeyDetails.to}
 Date: ${journeyDetails.date}
 Bus: ${selectedBus.name}
+Boarding: ${boardingPoint}
+Dropping: ${droppingPoint}
+Passenger: ${passengerName} | Age: ${passengerAge} | Gender: ${passengerGender}
 Seats: ${selectedSeats.join(", ")}
-Passenger: ${passengerName}
-Total: ₹${selectedSeats.length * selectedBus.fare}
-Payment: ${paymentMethod}`
+Total: ₹${total}
+Payment: ${paymentMethod}`);
+    setSelectedSeats([]);
+    setPassengerName("");
+    setPassengerEmail("");
+    setPassengerPhone("");
+    setPassengerAge("");
+    setPassengerGender("");
+    setBoardingPoint("");
+    setDroppingPoint("");
+    setPaymentMethod("");
+    setShowPayment(false);
+  };
+  const renderSeatLayout = () => {
+    if (!selectedBus) return null;
+    const total = selectedBus.totalSeats;
+    const layout = [];
+    const seatsPerRow = 4;
+    const lastRowSeats = 8;
+    const numRows = Math.floor((total - lastRowSeats) / seatsPerRow);
+    let seatNum = 1;
+    for (let i = 0; i < numRows; i++) {
+      layout.push(
+        <div key={`row-${i}`} className="seat-row">
+          <div className="seat-block">
+            {[0, 1].map((pos) => {
+              const isWindow = pos === 0;
+              const num = seatNum++;
+              return (
+                <button
+                  key={num}
+                  className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
+                    ${effectiveBookedSeats.has(num) ? "booked" : ""}
+                    ${isWindow ? "window" : ""}`}
+                  title={isWindow ? "Window Seat" : "Aisle Seat"}
+                  onClick={() => toggleSeat(num)}
+                  disabled={effectiveBookedSeats.has(num)}
+                >
+                  {num}
+                </button>
+              );
+            })}
+          </div>
+          <div className="seat-block">
+            {[0, 1].map((pos) => {
+              const isWindow = pos === 1;
+              const num = seatNum++;
+              return (
+                <button
+                  key={num}
+                  className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
+                    ${effectiveBookedSeats.has(num) ? "booked" : ""}
+                    ${isWindow ? "window" : ""}`}
+                  title={isWindow ? "Window Seat" : "Aisle Seat"}
+                  onClick={() => toggleSeat(num)}
+                  disabled={effectiveBookedSeats.has(num)}
+                >
+                  {num}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+    layout.push(
+      <div key="last-row" className="seat-row back-row" style={{ gap: 0 }}>
+        {[...Array(lastRowSeats)].map((_, i) => {
+          const num = seatNum++;
+          const isWindow = i === 0 || i === lastRowSeats - 1;
+          return (
+            <button
+              key={num}
+              className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
+                ${effectiveBookedSeats.has(num) ? "booked" : ""}
+                ${isWindow ? "window" : ""}`}
+              onClick={() => toggleSeat(num)}
+              disabled={effectiveBookedSeats.has(num)}
+              title={isWindow ? "Window Seat" : "Back Row Seat"}
+            >
+              {num}
+            </button>
+          );
+        })}
+      </div>
     );
-    setSelectedSeats([]);
-    setShowPayment(false);
-    setPaymentMethod("");
+    return layout;
   };
-  const handleChangeBus = () => {
-    setSelectedBus(null);
-    setSelectedSeats([]);
-    setShowPayment(false);
-    setPaymentMethod("");
-  };
-  const noResultMessage = useMemo(() => {
-    if (!journeyDetails) return "";
-    if (filteredBuses.length === 0)
-      return `No buses found for ${journeyDetails.from} → ${journeyDetails.to} (${journeyDetails.busType}).`;
-    return "";
-  }, [filteredBuses, journeyDetails]);
   return (
     <div className="booking-container">
       <SearchForm onSearch={handleSearch} />
       {!selectedBus && searchPerformed && (
         <div className="results-section">
-          <h2>Available Buses</h2>
-          {journeyDetails && (
-            <p className="journey-summary">
-              {journeyDetails.from} → {journeyDetails.to} on{" "}
-              {journeyDetails.date} | Type: {journeyDetails.busType}
-            </p>
+          <h3>Available Buses</h3>
+          {filteredBuses.length === 0 ? (
+            <p>No buses found.</p>
+          ) : (
+            filteredBuses.map((bus) => (
+              <div key={bus.id} className="bus-card">
+                <h4>{bus.name} ({bus.type})</h4>
+                <p>{bus.from} → {bus.to} | ₹{bus.fare}</p>
+                <p>Departure: {bus.departure}, Arrival: {bus.arrival} | Duration: {calcDuration(bus.departure, bus.arrival)}</p>
+                <button onClick={() => setSelectedBus(bus)}>Book Now</button>
+              </div>
+            ))
           )}
-          {filteredBuses.length === 0 && (
-            <div className="no-results">{noResultMessage}</div>
-          )}
-          <div className="bus-list">
-            {filteredBuses.map((bus) => {
-              const datasetTaken = bus.bookedSeats?.length || 0;
-              const userTaken = (bookedSeatsLS[bus.id] || []).length;
-              const available = (bus.totalSeats || 36) - (datasetTaken + userTaken);
-              return (
-                <div key={bus.id} className="bus-card">
-                  <div className="bus-card-head">
-                    <h3>
-                      {bus.name} <span className="bus-type">({bus.type})</span>
-                    </h3>
-                    <span className={`overnight-tag ${isOvernight(bus.departure, bus.arrival) ? "overnight" : "day"}`}>
-                      {isOvernight(bus.departure, bus.arrival) ? "Overnight" : "Day"}
-                    </span>
-                  </div>
-                  <p>
-                    {bus.departure} - {bus.arrival}{" "}
-                    <span className="duration">{calcDuration(bus.departure, bus.arrival)}</span>
-                  </p>
-                  <p>
-                    Fare: <strong>₹{bus.fare}</strong> | Seats Available:{" "}
-                    <strong>{available}</strong> / {bus.totalSeats || 36}
-                  </p>
-                  {bus.routeStops && (
-                    <details className="stops-details">
-                      <summary>Route Stops ({bus.routeStops.length})</summary>
-                      <ul className="stops-list">
-                        {bus.routeStops.map((s, i) => (
-                          <li key={i}>
-                            <span>{s.stop}</span>{" "}
-                            <small style={{ color: "#555" }}>{s.time}</small>
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  )}
-                  <button disabled={available <= 0} onClick={() => handleSelectBus(bus)}>
-                    {available > 0 ? "Select Bus" : "Sold Out"}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
         </div>
       )}
-      {selectedBus && journeyDetails && (
+      {selectedBus && (
         <div className="seat-booking-section">
-          <div className="seat-header">
-            <h2>{selectedBus.name} ({selectedBus.type}) – Seat Selection</h2>
-            <button className="back-btn" onClick={handleChangeBus}>← Back to results</button>
-          </div>
-          <div className="journey-info">
-            <p><strong>Route:</strong> {journeyDetails.from} → {journeyDetails.to} on {journeyDetails.date}</p>
-            <p><strong>Timing:</strong> {selectedBus.departure} – {selectedBus.arrival} <span className="duration">{calcDuration(selectedBus.departure, selectedBus.arrival)}</span></p>
-            <p><strong>Fare / Seat:</strong> ₹{selectedBus.fare}</p>
-          </div>
-          {selectedBus.routeStops && (
-            <details className="stops-details wide">
-              <summary>View Route Stops</summary>
-              <ol className="stops-list numbered">
-                {selectedBus.routeStops.map((s, i) => (
-                  <li key={i}><span>{s.stop}</span> <small style={{ color: "#555" }}>{s.time}</small></li>
-                ))}
-              </ol>
-            </details>
-          )}
-          <div className="seats-layout">
-            {seatRows.map((row, idx) => {
-              const isLast = idx === seatRows.length - 1;
-              const left = !isLast ? row.slice(0, 2) : [];
-              const right = !isLast ? row.slice(2) : row;
-              return (
-                <div key={idx} className="seat-row">
-                  {!isLast && (
-                    <div className="seat-pair">
-                      {left.map((seat) => {
-                        const booked = isSeatBooked(seat);
-                        const sel = selectedSeats.includes(seat);
-                        return (
-                          <button
-                            key={seat}
-                            className={`seat${booked ? " booked" : ""}${sel ? " selected" : ""}`}
-                            onClick={() => !booked && toggleSeat(seat)}
-                            disabled={booked}
-                          >
-                            {seat}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                  {!isLast && <div className="aisle" />}
-                  <div className={`seat-pair${isLast ? " last-row" : ""}`}>
-                    {right.map((seat) => {
-                      const booked = isSeatBooked(seat);
-                      const sel = selectedSeats.includes(seat);
-                      return (
-                        <button
-                          key={seat}
-                          className={`seat${booked ? " booked" : ""}${sel ? " selected" : ""}`}
-                          onClick={() => !booked && toggleSeat(seat)}
-                          disabled={booked}
-                        >
-                          {seat}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="passenger-box">
-            <h3>Passenger Details</h3>
-            <div className="passenger-grid">
-              <input type="text" placeholder="Full Name" value={passengerName} onChange={(e) => setPassengerName(e.target.value)} required />
-              <input type="email" placeholder="Email" value={passengerEmail} onChange={(e) => setPassengerEmail(e.target.value)} required />
-              <input type="tel" placeholder="Phone" value={passengerPhone} onChange={(e) => setPassengerPhone(e.target.value)} required />
+          <h3>{selectedBus.name} ({selectedBus.type})</h3>
+          <p>{selectedBus.from} → {selectedBus.to} | ₹{selectedBus.fare} max fare</p>
+          <div className="seats-grid">{renderSeatLayout()}</div>
+          {selectedSeats.length > 0 && (
+            <div className="selected-seats-info" style={{marginBottom: "1rem", fontWeight: "bold"}}>
+              Selected Seats: {selectedSeats.join(", ")}
             </div>
-          </div>
-          <div className="summary-box">
-            <p><strong>Selected Seats:</strong> {selectedSeats.length ? selectedSeats.join(", ") : "None"}</p>
-            <p><strong>Total:</strong> ₹{selectedSeats.length * selectedBus.fare}</p>
-            {!showPayment && (
-              <button className="proceed-btn" onClick={handleProceedToPayment} disabled={selectedSeats.length === 0}>
-                Proceed to Payment
-              </button>
+          )}
+          <div className="passenger-form big-inputs">
+            <input type="text" placeholder="Passenger Name" value={passengerName} onChange={(e) => setPassengerName(e.target.value)} />
+            <input type="email" placeholder="Email" value={passengerEmail} onChange={(e) => setPassengerEmail(e.target.value)} />
+            <input type="tel" placeholder="Phone" value={passengerPhone} onChange={(e) => setPassengerPhone(e.target.value)} />
+            <input type="number" placeholder="Age" value={passengerAge} onChange={(e) => setPassengerAge(e.target.value)} />
+            <select value={passengerGender} onChange={(e) => setPassengerGender(e.target.value)}>
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <select value={boardingPoint} onChange={(e) => {
+              setBoardingPoint(e.target.value);
+              setDroppingPoint("");
+            }}>
+              <option value="">Select Boarding Point</option>
+              {selectedBus.routeStops.map((stop, i) => (
+                <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+              ))}
+            </select>
+            <select value={droppingPoint} onChange={(e) => setDroppingPoint(e.target.value)} disabled={!boardingPoint}>
+              <option value="">Select Dropping Point</option>
+              {selectedBus.routeStops
+                .slice(selectedBus.routeStops.findIndex((s) => s.stop === boardingPoint) + 1)
+                .map((stop, i) => (
+                  <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+                ))}
+            </select>
+            {boardingPoint && droppingPoint && (
+              <p className="fare-info">Per Seat Fare for this route: ₹{calculateSplitFare(selectedBus, boardingPoint, droppingPoint)}</p>
             )}
-            {showPayment && (
+            {!showPayment ? (
+              <button onClick={handleProceedToPayment}>Proceed to Payment</button>
+            ) : (
               <div className="payment-section">
-                <h3>Payment Method</h3>
-                <div className="payment-options">
-                  {["UPI", "Card", "NetBanking"].map((m) => (
-                    <label key={m}>
-                      <input
-                        type="radio"
-                        name="payment"
-                        value={m}
-                        checked={paymentMethod === m}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                      {m}
-                    </label>
-                  ))}
-                </div>
-                <button
-                  className="confirm-btn"
-                  onClick={handleConfirmBooking}
-                  disabled={!paymentMethod}
-                >
-                  Confirm & Pay ₹{selectedSeats.length * selectedBus.fare}
-                </button>
+                <label>
+                  Select Payment Method:
+                  <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                    <option value="">--Choose--</option>
+                    <option value="UPI">UPI</option>
+                    <option value="Card">Card</option>
+                    <option value="Cash">Cash</option>
+                  </select>
+                </label>
+                <button onClick={handleConfirmBooking}>Confirm Booking</button>
               </div>
             )}
           </div>

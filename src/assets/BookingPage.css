@@ -137,29 +137,44 @@
   font-size: 0.9rem;
   box-shadow: 0 2px 6px -3px rgba(0, 0, 0, 0.05);
 }
+.passenger-box h3,
+.summary-box h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
 .passenger-grid {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
   margin-top: 0.5rem;
 }
-.passenger-grid input {
-  padding: 0.9rem 1rem;
-  font-size: 1rem;
+.passenger-details input,
+.passenger-details select {
+  padding: 14px 16px;
+  font-size: 1.1rem;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   background: #f8fafc;
   transition: border-color 0.15s, box-shadow 0.15s;
+  flex: 1 1 240px;
+  min-width: 220px;
 }
-.passenger-grid input:focus {
+.passenger-details input:focus,
+.passenger-details select:focus {
   outline: none;
   border-color: #2563eb;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
 }
-.passenger-grid input::placeholder {
+.passenger-details input::placeholder {
   color: #94a3b8;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+}
+.passenger-details label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
 }
 .proceed-btn,
 .confirm-btn,
@@ -219,7 +234,33 @@
     max-width: 100%;
   }
 }
-
-
-
-
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem; 
+  margin-bottom: 0.7rem; 
+}
+.seat-block {
+  display: flex;
+  gap: 0.4rem;
+}
+.passenger-form input,
+.passenger-form select {
+  padding: 16px 18px;
+  font-size: 1.15rem;
+  border: 2px solid #2563eb;
+  border-radius: 12px;
+  background: #f8fafc;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.passenger-form select {
+  min-width: 220px;
+}
+.passenger-form label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}

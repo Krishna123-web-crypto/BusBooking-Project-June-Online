@@ -8,7 +8,7 @@ const sampleBuses = [
   departure: "9:00 PM",
   arrival: "1:46 AM",  
   fare: 500,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Hyderabad", time: "9:00 PM", lat: 17.385, lng: 78.4867 },
@@ -29,7 +29,7 @@ const sampleBuses = [
     departure: "6:00 AM",
     arrival: "2:00 PM",
     fare: 600,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [5, 10, 11],
     routeStops: [
       { stop: "Hyderabad", time: "6:00 AM", lat: 17.385, lng: 78.4867 },
@@ -52,7 +52,7 @@ const sampleBuses = [
     departure: "5:00 PM",
     arrival: "11:00 PM",
     fare: 550,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Guntur", time: "6:00 PM", lat: 16.3067, lng: 80.4365 },
@@ -72,7 +72,7 @@ const sampleBuses = [
     departure: "5:00 AM",
     arrival: "8:30 AM",
     fare: 400,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "5:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -92,7 +92,7 @@ const sampleBuses = [
   departure: "7:30 PM",
   arrival: "6:00 AM",
   fare: 600,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Hyderabad", time: "7:30 PM", lat: 17.385, lng: 78.4867 },
@@ -113,7 +113,7 @@ const sampleBuses = [
   departure: "8:00 PM",
   arrival: "5:00 AM",
   fare: 500,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Vijayawada", time: "8:00 PM", lat: 16.5062, lng: 80.648 },
@@ -134,7 +134,7 @@ const sampleBuses = [
   departure: "9:00 PM",
   arrival: "6:30 AM",
   fare: 480,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Vijayawada", time: "9:00 PM", lat: 16.5062, lng: 80.648 },
@@ -155,7 +155,7 @@ const sampleBuses = [
   departure: "6:30 PM",
   arrival: "5:00 AM",
   fare: 600,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "6:30 PM", lat: 14.195, lng: 79.166 },
@@ -176,7 +176,7 @@ const sampleBuses = [
   departure: "7:00 PM",
   arrival: "5:30 AM",
   fare: 530,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "7:00 PM", lat: 14.195, lng: 79.166 },
@@ -196,7 +196,7 @@ const sampleBuses = [
   departure: "6:00 PM",
   arrival: "9:00 PM",
   fare: 200,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "6:00 PM", lat: 14.195, lng: 79.166 },
@@ -214,7 +214,7 @@ const sampleBuses = [
     departure: "8:30 PM",
     arrival: "6:30 AM",
     fare: 650,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "8:30 PM", lat: 17.385, lng: 78.4867 },
@@ -233,7 +233,7 @@ const sampleBuses = [
     departure: "7:00 PM",
     arrival: "5:00 AM",
     fare: 600,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [3, 8, 14],
     routeStops: [
       { stop: "Tirupati", time: "7:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -252,7 +252,7 @@ const sampleBuses = [
     departure: "6:00 PM",
     arrival: "2:00 AM",
     fare: 570,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "6:00 PM", lat: 16.5062, lng: 80.648 },
@@ -271,7 +271,7 @@ const sampleBuses = [
     departure: "7:30 PM",
     arrival: "4:30 AM",
     fare: 490,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "7:30 PM", lat: 14.195, lng: 79.1669 },
@@ -290,7 +290,7 @@ const sampleBuses = [
     departure: "9:00 PM",
     arrival: "7:00 AM",
     fare: 600,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "9:00 PM", lat: 17.385, lng: 78.4867 },
@@ -309,7 +309,7 @@ const sampleBuses = [
     departure: "10:00 PM",
     arrival: "7:00 AM",
     fare: 580,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "10:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -328,7 +328,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "5:00 AM",
     fare: 520,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "8:00 PM", lat: 16.5062, lng: 80.648 },
@@ -347,7 +347,7 @@ const sampleBuses = [
     departure: "6:00 PM",
     arrival: "9:30 PM",
     fare: 250,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "6:00 PM", lat: 14.195, lng: 79.1669 },
@@ -365,7 +365,7 @@ const sampleBuses = [
     departure: "5:00 AM",
     arrival: "8:00 AM",
     fare: 220,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "5:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -383,7 +383,7 @@ const sampleBuses = [
     departure: "11:00 PM",
     arrival: "6:00 AM",
     fare: 500,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "11:00 PM", lat: 17.385, lng: 78.4867 },
@@ -401,7 +401,7 @@ const sampleBuses = [
     departure: "9:00 PM",
     arrival: "7:00 AM",
     fare: 670,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "9:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -420,7 +420,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "6:00 AM",
     fare: 590,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "8:00 PM", lat: 17.385, lng: 78.4867 },
@@ -439,7 +439,7 @@ const sampleBuses = [
     departure: "10:30 PM",
     arrival: "7:00 AM",
     fare: 550,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "10:30 PM", lat: 16.5062, lng: 80.648 },
@@ -458,7 +458,7 @@ const sampleBuses = [
     departure: "4:30 PM",
     arrival: "7:30 PM",
     fare: 230,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "4:30 PM", lat: 14.195, lng: 79.1669 },
@@ -476,7 +476,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "5:00 AM",
     fare: 590,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "8:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -495,7 +495,7 @@ const sampleBuses = [
     departure: "7:30 PM",
     arrival: "6:00 AM",
     fare: 620,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "7:30 PM", lat: 14.195, lng: 79.1669 },
@@ -514,7 +514,7 @@ const sampleBuses = [
     departure: "6:30 PM",
     arrival: "3:30 AM",
     fare: 500,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "6:30 PM", lat: 17.385, lng: 78.4867 },
@@ -533,7 +533,7 @@ const sampleBuses = [
     departure: "7:00 PM",
     arrival: "4:00 AM",
     fare: 520,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "7:00 PM", lat: 16.5062, lng: 80.648 },
@@ -552,7 +552,7 @@ const sampleBuses = [
     departure: "6:30 PM",
     arrival: "4:30 AM",
     fare: 540,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "6:30 PM", lat: 14.195, lng: 79.1669 },
@@ -571,7 +571,7 @@ const sampleBuses = [
     departure: "10:00 PM",
     arrival: "7:30 AM",
     fare: 630,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "10:00 PM", lat: 17.385, lng: 78.4867 },
@@ -590,7 +590,7 @@ const sampleBuses = [
     departure: "7:30 PM",
     arrival: "6:00 AM",
     fare: 640,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "7:30 PM", lat: 17.385, lng: 78.4867 },
@@ -609,7 +609,7 @@ const sampleBuses = [
     departure: "9:00 PM",
     arrival: "8:00 AM",
     fare: 650,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "9:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -628,7 +628,7 @@ const sampleBuses = [
     departure: "10:00 PM",
     arrival: "7:00 AM",
     fare: 560,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "10:00 PM", lat: 16.5062, lng: 80.648 },
@@ -647,7 +647,7 @@ const sampleBuses = [
     departure: "8:30 PM",
     arrival: "6:00 AM",
     fare: 520,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "8:30 PM", lat: 14.195, lng: 79.1669 },
@@ -666,7 +666,7 @@ const sampleBuses = [
     departure: "6:30 PM",
     arrival: "5:30 AM",
     fare: 610,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "6:30 PM", lat: 17.385, lng: 78.4867 },
@@ -685,7 +685,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "6:00 AM",
     fare: 600,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "8:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -704,7 +704,7 @@ const sampleBuses = [
     departure: "11:00 PM",
     arrival: "7:30 AM",
     fare: 510,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "11:00 PM", lat: 17.385, lng: 78.4867 },
@@ -723,7 +723,7 @@ const sampleBuses = [
     departure: "7:00 PM",
     arrival: "6:30 AM",
     fare: 630,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "7:00 PM", lat: 14.195, lng: 79.1669 },
@@ -742,7 +742,7 @@ const sampleBuses = [
     departure: "9:00 PM",
     arrival: "5:30 AM",
     fare: 590,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "9:00 PM", lat: 16.5062, lng: 80.648 },
@@ -761,7 +761,7 @@ const sampleBuses = [
     departure: "6:00 PM",
     arrival: "5:00 AM",
     fare: 620,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "6:00 PM", lat: 17.385, lng: 78.4867 },
@@ -780,7 +780,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "6:00 AM",
     fare: 650,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "8:00 PM", lat: 17.385, lng: 78.4867 },
@@ -799,7 +799,7 @@ const sampleBuses = [
     departure: "10:00 PM",
     arrival: "6:30 AM",
     fare: 570,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "10:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -818,7 +818,7 @@ const sampleBuses = [
     departure: "7:00 PM",
     arrival: "6:30 AM",
     fare: 640,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "7:00 PM", lat: 14.195, lng: 79.1669 },
@@ -837,7 +837,7 @@ const sampleBuses = [
     departure: "11:30 PM",
     arrival: "8:00 AM",
     fare: 500,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "11:30 PM", lat: 17.385, lng: 78.4867 },
@@ -856,7 +856,7 @@ const sampleBuses = [
     departure: "9:00 PM",
     arrival: "6:30 AM",
     fare: 670,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "9:00 PM", lat: 17.385, lng: 78.4867 },
@@ -875,7 +875,7 @@ const sampleBuses = [
     departure: "8:30 PM",
     arrival: "5:30 AM",
     fare: 580,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Vijayawada", time: "8:30 PM", lat: 16.5062, lng: 80.648 },
@@ -894,7 +894,7 @@ const sampleBuses = [
     departure: "10:00 PM",
     arrival: "7:00 AM",
     fare: 540,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "10:00 PM", lat: 14.195, lng: 79.1669 },
@@ -913,7 +913,7 @@ const sampleBuses = [
     departure: "8:00 PM",
     arrival: "7:30 AM",
     fare: 660,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Tirupati", time: "8:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -932,7 +932,7 @@ const sampleBuses = [
     departure: "10:30 PM",
     arrival: "7:00 AM",
     fare: 530,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Hyderabad", time: "10:30 PM", lat: 17.385, lng: 78.4867 },
@@ -951,7 +951,7 @@ const sampleBuses = [
     departure: "6:30 PM",
     arrival: "9:30 PM",
     fare: 210,
-    totalSeats: 36,
+    totalSeats: 42,
     bookedSeats: [],
     routeStops: [
       { stop: "Rajampet", time: "6:30 PM", lat: 14.195, lng: 79.1669 },
@@ -969,7 +969,7 @@ const sampleBuses = [
   departure: "6:30 PM",
   arrival: "7:30 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Garuda Circle", time: "6:30 PM", lat: 13.6318, lng: 79.4215 },
@@ -987,7 +987,7 @@ const sampleBuses = [
   departure: "8:00 PM",
   arrival: "9:00 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Garuda Circle", time: "8:00 PM", lat: 13.6318, lng: 79.4215 },
@@ -1005,7 +1005,7 @@ const sampleBuses = [
   departure: "6:30 PM",
   arrival: "7:30 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Garuda Circle", time: "6:30 PM", lat: 13.6318, lng: 79.4215 },
@@ -1023,7 +1023,7 @@ const sampleBuses = [
   departure: "8:00 PM",
   arrival: "9:00 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Garuda Circle", time: "8:00 PM", lat: 13.6318, lng: 79.4215 },
@@ -1041,7 +1041,7 @@ const sampleBuses = [
   departure: "9:30 PM",
   arrival: "10:30 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Garuda Circle", time: "9:30 PM", lat: 13.6318, lng: 79.4215 },
@@ -1059,7 +1059,7 @@ const sampleBuses = [
   departure: "7:45 PM",
   arrival: "8:45 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirumala", time: "7:45 PM", lat: 13.6836, lng: 79.3527 },
@@ -1077,7 +1077,7 @@ const sampleBuses = [
   departure: "9:15 PM",
   arrival: "10:15 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirumala", time: "9:15 PM", lat: 13.6836, lng: 79.3527 },
@@ -1095,7 +1095,7 @@ const sampleBuses = [
   departure: "10:45 PM",
   arrival: "11:45 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirumala", time: "10:45 PM", lat: 13.6836, lng: 79.3527 },
@@ -1113,7 +1113,7 @@ const sampleBuses = [
   departure: "7:00 PM",
   arrival: "8:00 PM",
   fare: 120,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Kadapa", time: "7:00 PM", lat: 14.4673, lng: 78.8242 },
@@ -1131,7 +1131,7 @@ const sampleBuses = [
   departure: "6:00 PM",
   arrival: "7:00 PM",
   fare: 120,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "6:00 PM", lat: 14.1959, lng: 79.1590 },
@@ -1149,7 +1149,7 @@ const sampleBuses = [
   departure: "8:30 AM",
   arrival: "9:30 AM",
   fare: 180,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Kadapa", time: "8:30 AM", lat: 14.4673, lng: 78.8242 },
@@ -1167,7 +1167,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "9:00 AM",
   fare: 220,
-  totalSeats: 40,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Madanapalle", time: "6:00 AM", lat: 13.5503, lng: 78.5029 },
@@ -1185,7 +1185,7 @@ const sampleBuses = [
   departure: "4:00 PM",
   arrival: "7:00 PM",
   fare: 220,
-  totalSeats: 40,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Kadapa", time: "4:00 PM", lat: 14.4673, lng: 78.8242 },
@@ -1203,7 +1203,7 @@ const sampleBuses = [
   departure: "9:00 PM",
   arrival: "4:00 AM",
   fare: 620,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "9:00 PM", lat: 14.1959, lng: 79.1590 },
@@ -1233,7 +1233,7 @@ const sampleBuses = [
   departure: "9:00 PM",
   arrival: "4:00 AM",
   fare: 620,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Bengaluru", time: "9:00 PM", lat: 12.9716, lng: 77.5946 },
@@ -1263,7 +1263,7 @@ const sampleBuses = [
   departure: "9:00 AM",
   arrival: "10:00 AM",
   fare: 80,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "9:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -1284,7 +1284,7 @@ const sampleBuses = [
   departure: "9:00 AM",
   arrival: "10:00 AM",
   fare: 80,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Sri Kalahasti", time: "9:00 AM", lat: 13.7490, lng: 79.7042 },
@@ -1306,7 +1306,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "9:00 AM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Madanapalle", time: "6:00 AM", lat: 13.5503, lng: 78.5029 },
@@ -1327,7 +1327,7 @@ const sampleBuses = [
   departure: "3:00 PM",
   arrival: "6:00 PM",
   fare: 150,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "3:00 PM", lat: 13.6288, lng: 79.4192 },
@@ -1348,7 +1348,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "11:30 AM",
   fare: 450,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "6:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -1369,7 +1369,7 @@ const sampleBuses = [
   departure: "4:00 PM",
   arrival: "9:30 PM",
   fare: 400,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Bengaluru", time: "4:00 PM", lat: 12.9716, lng: 77.5946 },
@@ -1390,7 +1390,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "1:00 PM",
   fare: 500,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "6:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -1414,7 +1414,7 @@ const sampleBuses = [
   departure: "3:30 PM",
   arrival: "9:45 PM",
   fare: 420,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rayachoti", time: "3:30 PM", lat: 14.0561, lng: 78.7510 },
@@ -1438,7 +1438,7 @@ const sampleBuses = [
   departure: "6:00 AM",
   arrival: "12:15 PM",
   fare: 420,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirumala", time: "6:00 AM", lat: 13.6833, lng: 79.3461 },
@@ -1462,7 +1462,7 @@ const sampleBuses = [
   departure: "2:00 PM",
   arrival: "6:30 PM",
   fare: 400,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rayachoti", time: "2:00 PM", lat: 14.0561, lng: 78.7510 },
@@ -1483,7 +1483,7 @@ const sampleBuses = [
   departure: "7:00 AM",
   arrival: "11:30 AM",
   fare: 400,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Tirupati", time: "7:00 AM", lat: 13.6288, lng: 79.4192 },
@@ -1504,7 +1504,7 @@ const sampleBuses = [
   departure: "6:30 AM",
   arrival: "11:15 AM",
   fare: 380,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Rajampet", time: "6:30 AM", lat: 14.1959, lng: 79.1590 },
@@ -1524,7 +1524,7 @@ const sampleBuses = [
   departure: "3:00 PM",
   arrival: "7:45 PM",
   fare: 380,
-  totalSeats: 36,
+  totalSeats: 42,
   bookedSeats: [],
   routeStops: [
     { stop: "Nellore", time: "3:00 PM", lat: 14.4426, lng: 79.9865 },
