@@ -1,8 +1,7 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import "leaflet/dist/leaflet.css";
 import "../assets/SearchBus.css";
-import BusTimeline from "../Components/BusTimeline";
-import MapModal from "../Components/MapModal";
+import TripDetails from "../Components/TripDetails";
 import sampleBuses from "../data/buses";
 const uniq = (arr) => [...new Set(arr)];
 function parseTimeTo24hHours(timeStr) {
@@ -26,13 +25,16 @@ export default function SearchBus() {
     () => uniq([...sampleBuses.map((b) => b.from), ...sampleBuses.map((b) => b.to)]),
     []
   );
-  const busTypes = useMemo(() => ["All Types", ...uniq(sampleBuses.map((b) => b.type))], []);
+  const busTypes = useMemo(
+    () => ["All Types", ...uniq(sampleBuses.map((b) => b.type))],
+    []
+  );
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [typeFilter, setTypeFilter] = useState("All Types");
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
-  const [selectedBus, setSelectedBus] = useState(null);
+  const resultsRef = useRef(null);
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
@@ -46,6 +48,7 @@ export default function SearchBus() {
         (typeFilter === "All Types" || bus.type === typeFilter)
     );
     setResults(filtered);
+    setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [from, to, typeFilter]);
   const groupedResults = useMemo(() => {
     return results.reduce((acc, bus) => {
@@ -62,6 +65,9 @@ export default function SearchBus() {
     if (from === to && from) return "'From' and 'To' cannot be the same.";
     return "No buses found for the selected route.";
   }, [from, to]);
+  const handleOpenMap = (bus) => {
+    alert(`Open map for: ${bus.name}`);
+  };
   return (
     <div className="booking-container">
       <div className="search-form">
@@ -103,43 +109,64 @@ export default function SearchBus() {
           <button onClick={runSearch}>Search</button>
         </div>
       </div>
-      {searched && Object.keys(groupedResults).length === 0 && (
-        <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
-      )}
-      {Object.entries(groupedResults).map(([route, buses]) => (
-        <div key={route} className="route-group">
-          <h2 className="route-title">{route}</h2>
-          {buses.map((bus) => {
-            const availableSeats = bus.totalSeats - bus.bookedSeats.length;
-            return (
-              <div key={bus.id} className="bus-card apsrtc-style">
-                <div className="bus-header">
-                  <h3 className="bus-name">{bus.name}</h3>
-                  <p className="bus-type">{bus.type}</p>
+      <div ref={resultsRef}>
+        {searched && Object.keys(groupedResults).length === 0 && (
+          <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
+        )}
+        {Object.entries(groupedResults).map(([route, buses]) => (
+          <div key={route} className="route-group">
+            <h2 className="route-title">{route}</h2>
+            {buses.map((bus) => {
+              const availableSeats = bus.totalSeats - bus.bookedSeats.length;
+              return (
+                <div key={bus.id} className="bus-card apsrtc-style">
+                  <div className="bus-header">
+                    <h3 className="bus-name">{bus.name}</h3>
+                    <p className="bus-type">{bus.type}</p>
+                  </div>
+                  <p className="bus-info">
+                    <strong>Departure:</strong> {bus.departure} | <strong>Arrival:</strong> {bus.arrival}
+                  </p>
+                  <p className="bus-info">
+                    <strong>Fare:</strong> ₹{bus.fare}
+                  </p>
+                  <p className="bus-info">
+                    <strong>Seats Available:</strong> {availableSeats}
+                  </p>
+                  <p
+                    className="journey-type"
+                    style={{
+                      color: isOvernight(bus.departure, bus.arrival) ? "red" : "green",
+                    }}
+                  >
+                    {isOvernight(bus.departure, bus.arrival) ? "Overnight Journey" : "Day Journey"}
+                  </p>
+                  <TripDetails
+                    stops={bus.routeStops}
+                    currentIndex={bus.currentStopIndex || -1}
+                  />
+                  <div style={{ textAlign: "right", marginTop: "10px" }}>
+                    <button
+                      className="open-map-button"
+                      onClick={() => handleOpenMap(bus)}
+                      style={{
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: "5px",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Open Map
+                    </button>
+                  </div>
                 </div>
-                <p className="bus-info">
-                  <strong>Departure:</strong> {bus.departure} | <strong>Arrival:</strong> {bus.arrival}
-                </p>
-                <p className="bus-info"><strong>Fare:</strong> ₹{bus.fare}</p>
-                <p className="bus-info"><strong>Seats Available:</strong> {availableSeats}</p>
-                <p
-                  className="journey-type"
-                  style={{
-                    color: isOvernight(bus.departure, bus.arrival) ? "red" : "green",
-                  }}
-                >
-                  {isOvernight(bus.departure, bus.arrival) ? "Overnight Journey" : "Day Journey"}
-                </p>
-                <BusTimeline stops={bus.routeStops} />
-                <button onClick={() => setSelectedBus(bus)} className="open-map-btn">
-                  Open Map
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      ))}
-      {selectedBus && <MapModal buses={[selectedBus]} onClose={() => setSelectedBus(null)} />}
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

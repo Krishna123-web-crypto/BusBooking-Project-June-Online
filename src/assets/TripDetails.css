@@ -1,21 +1,51 @@
-.trip-details {
-  margin-top: 10px;
-  border: 1px solid #ddd;
+.trip-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 10px 0;
+}
+
+.timeline-dot {
+  width: 16px;
+  height: 16px;
+  background-color: gray;
+  border-radius: 50%;
+  position: absolute;
+  left: -28px;
+  top: 10px;
+  border: 2px solid white;
+  z-index: 1;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #ccc;
+  z-index: 0;
+}
+
+.timeline-content {
+  background: #f9f9f9;
+  padding: 8px 12px;
   border-radius: 8px;
-  padding: 10px;
-  background: #fff;
+  border: 1px solid #ddd;
 }
-.trip-header, .trip-row {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
-  padding: 5px;
-  border-bottom: 1px solid #eee;
+
+.timeline-item.active .timeline-dot {
+  background-color: green;
+  box-shadow: 0 0 8px green;
 }
-.trip-header {
-  font-weight: bold;
-  background: #f5f5f5;
-}
-.highlight-row {
-  background-color: #fff3cd;
-  font-weight: bold;
+
+.timeline-item.active .timeline-content {
+  border: 2px solid green;
+  background-color: #e9fbe9;
 }
