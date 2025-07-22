@@ -3,7 +3,7 @@ import "leaflet/dist/leaflet.css";
 import "../assets/SearchBus.css";
 import TripDetails from "../Components/TripDetails";
 import sampleBuses from "../data/buses";
-import MapModal from "../Components/MapModal"; // ✅ import the modal
+import MapModal from "../Components/MapModal"; 
 const uniq = (arr) => [...new Set(arr)];
 function parseTimeTo24hHours(timeStr) {
   const match = timeStr.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
