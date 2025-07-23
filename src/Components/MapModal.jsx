@@ -1,46 +1,32 @@
 import React from "react";
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "../assets/SearchBus.css";
-const getRandomColor = () => {
-  const colors = ["red", "green", "blue", "orange", "purple", "teal"];
-  return colors[Math.floor(Math.random() * colors.length)];
-};
+import "../assets/MapModal.css";
 export default function MapModal({ buses, onClose }) {
-  const center = buses?.[0]?.routeStops?.[0]
-    ? [buses[0].routeStops[0].lat, buses[0].routeStops[0].lng]
-    : [17.385, 78.4867];
-    return (
+  const routeStops = buses?.[0]?.routeStops || [];
+  const center = routeStops.length > 0
+    ? [routeStops[0].lat, routeStops[0].lng]
+    : [17.385, 78.4867]; 
+  const positions = routeStops.map(stop => [stop.lat, stop.lng]);
+  return (
     <div className="map-modal-overlay">
       <div className="map-modal-content">
-        <button className="map-modal-close" onClick={onClose}>✕ Close</button>
-        <h3 style={{ textAlign: "center", marginBottom: "10px" }}>
-          Bus Routes – Meeting Point Map
-        </h3>
-        <MapContainer
-          style={{ height: "400px", width: "100%" }}
-          center={center}
-          zoom={7}
-          scrollWheelZoom={false}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {buses.map((bus, busIndex) => (
-            <Polyline
-              key={busIndex}
-              positions={bus.routeStops.map((s) => [s.lat, s.lng])}
-              color={getRandomColor()}
-            />
+        <button className="close-map-btn" onClick={onClose}>×</button>
+        <MapContainer center={center} zoom={8} style={{ height: "500px", width: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; OpenStreetMap contributors'
+          />
+          {positions.length > 1 && <Polyline positions={positions} color="blue" />}
+          {routeStops.map((stop, idx) => (
+            <Marker key={idx} position={[stop.lat, stop.lng]}>
+              <Popup>
+                <strong>{stop.stop}</strong><br />
+                Arrival: {stop.time}
+              </Popup>
+            </Marker>
           ))}
-          {buses.map((bus, busIndex) =>
-            bus.routeStops.map((stop, i) => (
-              <Marker key={`${busIndex}-${i}`} position={[stop.lat, stop.lng]}>
-                <Popup>
-                  <b>{bus.name}</b><br />
-                  {stop.stop} - {stop.time}
-                </Popup>
-              </Marker>
-            ))
-          )}
         </MapContainer>
       </div>
     </div>
