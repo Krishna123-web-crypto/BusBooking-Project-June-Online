@@ -1695,7 +1695,6 @@ const sampleBuses = [
     { stop: "LB Nagar", time: "12:00 AM", lat: 17.35, lng: 78.5667 },
     { stop: "Hyderabad", time: "12:30 AM", lat: 17.385, lng: 78.4867 },
   ],
-}
-
+},
 ];
 export default sampleBuses;
