@@ -2,8 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null); // {email?, phone?, name?}
-
+  const [user, setUser] = useState(null); 
   useEffect(() => {
     const loggedIn = localStorage.getItem("loggedIn") === "true";
     const userData = localStorage.getItem("user");
@@ -11,14 +10,12 @@ export const AuthProvider = ({ children }) => {
       try {
         setUser(JSON.parse(userData));
       } catch {
-        // fallback when older code stored a plain string
         setUser({ email: userData });
       }
       setIsLoggedIn(true);
     }
   }, []);
   const login = (userData) => {
-    // userData should be an object
     setIsLoggedIn(true);
     setUser(userData);
     localStorage.setItem("loggedIn", "true");
@@ -36,4 +33,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
