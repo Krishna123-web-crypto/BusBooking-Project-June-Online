@@ -1,6 +1,5 @@
 import React from "react";
 import "../assets/TripDetails.css";
-
 export default function TripDetails({ stops = [], currentIndex = -1 }) {
   return (
     <div className="trip-timeline">

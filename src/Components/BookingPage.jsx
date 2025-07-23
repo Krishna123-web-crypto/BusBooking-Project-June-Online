@@ -60,11 +60,9 @@ export default function BookingPage() {
   const [boardingPoint, setBoardingPoint] = useState("");
   const [droppingPoint, setDroppingPoint] = useState("");
   const [searchPerformed, setSearchPerformed] = useState(false);
-
   useEffect(() => {
     saveBookedSeats(bookedSeatsLS);
   }, [bookedSeatsLS]);
-
   const handleSearch = useCallback(({ from, to, date, busType }) => {
     const results = sampleBuses.filter(
       (b) => b.from === from && b.to === to && (busType === "All" || b.type === busType)

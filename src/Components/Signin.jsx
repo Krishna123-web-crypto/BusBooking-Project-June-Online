@@ -11,7 +11,6 @@ export default function SignIn() {
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-
   const handleSignIn = (e) => {
     e.preventDefault();
     if (loginMethod === "email") {
@@ -65,7 +64,6 @@ export default function SignIn() {
             Phone
           </button>
         </div>
-
         <form onSubmit={handleSignIn} className="signin-form-fields">
           {loginMethod === "email" ? (
             <>

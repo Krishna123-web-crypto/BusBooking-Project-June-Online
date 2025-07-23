@@ -5,7 +5,6 @@ export default function BusTimeline({ stops }) {
     <div className="timeline-container">
       {stops.map((stop, index) => (
         <div className="timeline-item" key={index}>
-          {/* ETA Time */}
           <div className="timeline-time">
             {stop.time ? stop.time : "--"}
           </div>
