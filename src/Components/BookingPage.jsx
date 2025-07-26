@@ -138,6 +138,22 @@ Payment: ${upiApp}`);
     if (!selectedBus) return null;
     const total = selectedBus.totalSeats;
     const layout = [];
+    layout.push(
+      <div key="driver-seat" className="seat-row" style={{ marginBottom: "1rem", justifyContent: "flex-start", paddingLeft: "1rem" }}>
+        <div
+          className="seat driver-seat"
+          title="Driver Seat"
+          style={{
+            background: "#374151",
+            color: "white",
+            cursor: "default",
+            fontWeight: "bold"
+          }}
+        >
+          D
+        </div>
+      </div>
+    );
     const seatsPerRow = 4;
     const lastRowSeats = 8;
     const numRows = Math.floor((total - lastRowSeats) / seatsPerRow);
@@ -235,7 +251,7 @@ Payment: ${upiApp}`);
           <p>{selectedBus.from} → {selectedBus.to} | ₹{selectedBus.fare} max fare</p>
           <div className="seats-grid">{renderSeatLayout()}</div>
           {selectedSeats.length > 0 && (
-            <div className="selected-seats-info" style={{marginBottom: "1rem", fontWeight: "bold"}}>
+            <div className="selected-seats-info" style={{ marginBottom: "1rem", fontWeight: "bold" }}>
               Selected Seats: {selectedSeats.join(", ")}
             </div>
           )}
@@ -276,22 +292,14 @@ Payment: ${upiApp}`);
               <div className="payment-section">
                 <label>
                   Select UPI App:
-                  <select
-                    value={upiApp}
-                    onChange={(e) => setUpiApp(e.target.value)}
-                  >
+                  <select value={upiApp} onChange={(e) => setUpiApp(e.target.value)}>
                     <option value="">--Choose UPI App--</option>
                     <option value="PhonePe">PhonePe</option>
                     <option value="Google Pay">Google Pay</option>
                     <option value="Paytm">Paytm</option>
                   </select>
                 </label>
-                <button
-                  onClick={handleConfirmBooking}
-                  style={{marginTop: "1rem"}}
-                >
-                  Pay
-                </button>
+                <button onClick={handleConfirmBooking} style={{ marginTop: "1rem" }}>Pay</button>
               </div>
             )}
           </div>

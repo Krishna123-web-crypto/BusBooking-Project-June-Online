@@ -82,14 +82,12 @@
 .seat-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 2.5rem; 
+  margin-bottom: 0.7rem; 
 }
-.seat-pair {
+.seat-block {
   display: flex;
   gap: 0.4rem;
-}
-.aisle {
-  flex: 0 0 24px;
 }
 .seat {
   width: 42px;
@@ -100,8 +98,11 @@
   font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.seat:hover:not(.booked):not(.selected) {
+.seat:hover:not(.booked):not(.selected):not(.driver-seat) {
   background: #eef2ff;
   border-color: #6366f1;
 }
@@ -115,6 +116,19 @@
   color: #fff;
   cursor: not-allowed;
   border-color: #6b7280;
+}
+.seat.driver-seat {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: #374151; /* gray-800 */
+  color: white;
+  font-weight: bold;
+  border: 2px solid #1f2937; /* gray-900 */
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .form-and-summary {
   flex: 1 1 380px;
@@ -233,16 +247,6 @@
   .seats-layout {
     max-width: 100%;
   }
-}
-.seat-row {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem; 
-  margin-bottom: 0.7rem; 
-}
-.seat-block {
-  display: flex;
-  gap: 0.4rem;
 }
 .passenger-form input,
 .passenger-form select {
