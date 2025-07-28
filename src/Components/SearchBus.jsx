@@ -91,11 +91,13 @@ export default function SearchBus() {
             To:
             <select value={to} onChange={(e) => setTo(e.target.value)}>
               <option value="">To</option>
-              {locations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
+              {locations
+                .filter((loc) => loc !== "Hyderabad")
+                .map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
+                  </option>
+                ))}
             </select>
           </label>
           <label>
