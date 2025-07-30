@@ -107,7 +107,6 @@ export default function SignIn() {
             {loginMethod === "phone" && !otpSent ? "Send OTP" : "Sign In"}
           </button>
         </form>
-
         <p>
           Don’t have an account? <Link to="/register">Register</Link>
         </p>
