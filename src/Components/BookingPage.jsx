@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import SearchForm from "../Components/SearchForm";
 import sampleBuses from "../data/buses";
 import "../assets/BookingPage.css";
-const LS_KEY = "bookedSeatsByBus_v2";
+const LS_KEY = "bookedSeatsByBus_v3";
 function parseTimeTo24hHours(timeStr) {
   const match = timeStr.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
   if (!match) return null;
@@ -75,12 +75,13 @@ export default function BookingPage() {
     setShowPayment(false);
   }, []);
   const effectiveBookedSeats = useMemo(() => {
-    if (!selectedBus) return new Set();
-    const stored = new Set(bookedSeatsLS[selectedBus.id] || []);
-    return new Set(stored);
-  }, [selectedBus, bookedSeatsLS]);
+    if (!selectedBus || !journeyDetails) return {};
+    const key = `${selectedBus.id}_${journeyDetails.date}`;
+    const stored = bookedSeatsLS[key] || {};
+    return stored;
+  }, [selectedBus, bookedSeatsLS, journeyDetails]);
   const toggleSeat = (seat) => {
-    if (effectiveBookedSeats.has(seat)) return;
+    if (effectiveBookedSeats[seat]?.status === "booked") return;
     setSelectedSeats((prev) =>
       prev.includes(seat) ? prev.filter((s) => s !== seat) : [...prev, seat]
     );
@@ -106,23 +107,20 @@ export default function BookingPage() {
       alert("Please select a UPI app.");
       return;
     }
+    const key = `${selectedBus.id}_${journeyDetails.date}`;
     const splitFare = calculateSplitFare(selectedBus, boardingPoint, droppingPoint);
     const total = selectedSeats.length * splitFare;
-    const updated = {
-      ...bookedSeatsLS,
-      [selectedBus.id]: [...(bookedSeatsLS[selectedBus.id] || []), ...selectedSeats],
-    };
-    setBookedSeatsLS(updated);
-    alert(`✅ Booking Confirmed!
-Route: ${journeyDetails.from} → ${journeyDetails.to}
-Date: ${journeyDetails.date}
-Bus: ${selectedBus.name}
-Boarding: ${boardingPoint}
-Dropping: ${droppingPoint}
-Passenger: ${passengerName} | Age: ${passengerAge} | Gender: ${passengerGender}
-Seats: ${selectedSeats.join(", ")}
-Total: ₹${total}
-Payment: ${upiApp}`);
+    const updatedSeats = { ...(bookedSeatsLS[key] || {}) };
+    selectedSeats.forEach((seat) => {
+      updatedSeats[seat] = {
+        status: "booked",
+        name: passengerName,
+        email: passengerEmail,
+        phone: passengerPhone,
+      };
+    });
+    setBookedSeatsLS((prev) => ({ ...prev, [key]: updatedSeats }));
+    alert(`✅ Booking Confirmed!\nSeats: ${selectedSeats.join(", ")}\nTotal: ₹${total}`);
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
@@ -134,6 +132,25 @@ Payment: ${upiApp}`);
     setUpiApp("");
     setShowPayment(false);
   };
+  const handleCancelSeat = (seat) => {
+    const data = effectiveBookedSeats[seat];
+    if (!data) return;
+    const sameUser =
+      data.name === passengerName &&
+      data.email === passengerEmail &&
+      data.phone === passengerPhone;
+      if (!sameUser) {
+      alert("Only the person who booked the seat can cancel it.");
+      return;
+    }
+    const reason = prompt("Enter reason for cancellation:");
+    if (!reason) return;
+    const key = `${selectedBus.id}_${journeyDetails.date}`;
+    const updated = { ...bookedSeatsLS[key] };
+    updated[seat] = { ...data, status: "cancelled", reason };
+    setBookedSeatsLS((prev) => ({ ...prev, [key]: updated }));
+    alert(`Seat ${seat} cancelled.`);
+  };
   const renderSeatLayout = () => {
     if (!selectedBus) return null;
     const total = selectedBus.totalSeats;
@@ -143,12 +160,7 @@ Payment: ${upiApp}`);
         <div
           className="seat driver-seat"
           title="Driver Seat"
-          style={{
-            background: "#374151",
-            color: "white",
-            cursor: "default",
-            fontWeight: "bold"
-          }}
+          style={{ background: "#374151", color: "white", cursor: "default", fontWeight: "bold" }}
         >
           D
         </div>
@@ -158,69 +170,39 @@ Payment: ${upiApp}`);
     const lastRowSeats = 8;
     const numRows = Math.floor((total - lastRowSeats) / seatsPerRow);
     let seatNum = 1;
+    const renderSeat = (num) => {
+      const seatData = effectiveBookedSeats[num];
+      const isBooked = seatData?.status === "booked";
+      const isCancelled = seatData?.status === "cancelled";
+      if (isCancelled) return null;
+      return (
+        <button
+          key={num}
+          className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
+            ${isBooked ? "booked" : ""}`}
+          onClick={() => (isBooked ? handleCancelSeat(num) : toggleSeat(num))}
+          disabled={isBooked}
+          title={isBooked ? `Booked by ${seatData.name}` : "Available Seat"}
+        >
+          {num}
+        </button>
+      );
+    };
     for (let i = 0; i < numRows; i++) {
       layout.push(
         <div key={`row-${i}`} className="seat-row">
           <div className="seat-block">
-            {[0, 1].map((pos) => {
-              const isWindow = pos === 0;
-              const num = seatNum++;
-              return (
-                <button
-                  key={num}
-                  className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
-                    ${effectiveBookedSeats.has(num) ? "booked" : ""}
-                    ${isWindow ? "window" : ""}`}
-                  title={isWindow ? "Window Seat" : "Aisle Seat"}
-                  onClick={() => toggleSeat(num)}
-                  disabled={effectiveBookedSeats.has(num)}
-                >
-                  {num}
-                </button>
-              );
-            })}
+            {[0, 1].map(() => renderSeat(seatNum++))}
           </div>
           <div className="seat-block">
-            {[0, 1].map((pos) => {
-              const isWindow = pos === 1;
-              const num = seatNum++;
-              return (
-                <button
-                  key={num}
-                  className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
-                    ${effectiveBookedSeats.has(num) ? "booked" : ""}
-                    ${isWindow ? "window" : ""}`}
-                  title={isWindow ? "Window Seat" : "Aisle Seat"}
-                  onClick={() => toggleSeat(num)}
-                  disabled={effectiveBookedSeats.has(num)}
-                >
-                  {num}
-                </button>
-              );
-            })}
+            {[0, 1].map(() => renderSeat(seatNum++))}
           </div>
         </div>
       );
     }
     layout.push(
       <div key="last-row" className="seat-row back-row" style={{ gap: 0 }}>
-        {[...Array(lastRowSeats)].map((_, i) => {
-          const num = seatNum++;
-          const isWindow = i === 0 || i === lastRowSeats - 1;
-          return (
-            <button
-              key={num}
-              className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
-                ${effectiveBookedSeats.has(num) ? "booked" : ""}
-                ${isWindow ? "window" : ""}`}
-              onClick={() => toggleSeat(num)}
-              disabled={effectiveBookedSeats.has(num)}
-              title={isWindow ? "Window Seat" : "Back Row Seat"}
-            >
-              {num}
-            </button>
-          );
-        })}
+        {[...Array(lastRowSeats)].map(() => renderSeat(seatNum++))}
       </div>
     );
     return layout;
