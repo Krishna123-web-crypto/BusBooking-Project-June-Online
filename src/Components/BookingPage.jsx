@@ -139,7 +139,7 @@ export default function BookingPage() {
       data.name === passengerName &&
       data.email === passengerEmail &&
       data.phone === passengerPhone;
-      if (!sameUser) {
+    if (!sameUser) {
       alert("Only the person who booked the seat can cancel it.");
       return;
     }
@@ -151,12 +151,37 @@ export default function BookingPage() {
     setBookedSeatsLS((prev) => ({ ...prev, [key]: updated }));
     alert(`Seat ${seat} cancelled.`);
   };
+  const renderSeat = (num, isWindow = false) => {
+    const seatData = effectiveBookedSeats[num];
+    const isBooked = seatData?.status === "booked";
+    const isCancelled = seatData?.status === "cancelled";
+    if (isCancelled) return null;
+    return (
+      <button
+        key={num}
+        className={`seat ${selectedSeats.includes(num) ? "selected" : ""} 
+          ${isBooked ? "booked" : ""} 
+          ${isWindow ? "window-seat" : ""}`}
+        onClick={() => (isBooked ? handleCancelSeat(num) : toggleSeat(num))}
+        disabled={isBooked}
+        title={
+          isBooked ? `Booked by ${seatData.name}` : isWindow ? "Window Seat" : "Available Seat"
+        }
+      >
+        {num}
+      </button>
+    );
+  };
   const renderSeatLayout = () => {
     if (!selectedBus) return null;
     const total = selectedBus.totalSeats;
     const layout = [];
     layout.push(
-      <div key="driver-seat" className="seat-row" style={{ marginBottom: "1rem", justifyContent: "flex-start", paddingLeft: "1rem" }}>
+      <div
+        key="driver-seat"
+        className="seat-row"
+        style={{ marginBottom: "1rem", justifyContent: "flex-start", paddingLeft: "1rem" }}
+      >
         <div
           className="seat driver-seat"
           title="Driver Seat"
@@ -170,39 +195,25 @@ export default function BookingPage() {
     const lastRowSeats = 8;
     const numRows = Math.floor((total - lastRowSeats) / seatsPerRow);
     let seatNum = 1;
-    const renderSeat = (num) => {
-      const seatData = effectiveBookedSeats[num];
-      const isBooked = seatData?.status === "booked";
-      const isCancelled = seatData?.status === "cancelled";
-      if (isCancelled) return null;
-      return (
-        <button
-          key={num}
-          className={`seat ${selectedSeats.includes(num) ? "selected" : ""}
-            ${isBooked ? "booked" : ""}`}
-          onClick={() => (isBooked ? handleCancelSeat(num) : toggleSeat(num))}
-          disabled={isBooked}
-          title={isBooked ? `Booked by ${seatData.name}` : "Available Seat"}
-        >
-          {num}
-        </button>
-      );
-    };
     for (let i = 0; i < numRows; i++) {
       layout.push(
         <div key={`row-${i}`} className="seat-row">
           <div className="seat-block">
-            {[0, 1].map(() => renderSeat(seatNum++))}
+            {renderSeat(seatNum++, true)} 
+            {renderSeat(seatNum++)}
           </div>
           <div className="seat-block">
-            {[0, 1].map(() => renderSeat(seatNum++))}
+            {renderSeat(seatNum++)}
+            {renderSeat(seatNum++, true)} 
           </div>
         </div>
       );
     }
     layout.push(
       <div key="last-row" className="seat-row back-row" style={{ gap: 0 }}>
-        {[...Array(lastRowSeats)].map(() => renderSeat(seatNum++))}
+        {[...Array(lastRowSeats)].map((_, i) =>
+          renderSeat(seatNum++, i === 0 || i === lastRowSeats - 1) // First & last seat = window
+        )}
       </div>
     );
     return layout;
@@ -218,9 +229,16 @@ export default function BookingPage() {
           ) : (
             filteredBuses.map((bus) => (
               <div key={bus.id} className="bus-card">
-                <h4>{bus.name} ({bus.type})</h4>
-                <p>{bus.from} → {bus.to} | ₹{bus.fare}</p>
-                <p>Departure: {bus.departure}, Arrival: {bus.arrival} | Duration: {calcDuration(bus.departure, bus.arrival)}</p>
+                <h4>
+                  {bus.name} ({bus.type})
+                </h4>
+                <p>
+                  {bus.from} → {bus.to} | ₹{bus.fare}
+                </p>
+                <p>
+                  Departure: {bus.departure}, Arrival: {bus.arrival} | Duration:{" "}
+                  {calcDuration(bus.departure, bus.arrival)}
+                </p>
                 <button onClick={() => setSelectedBus(bus)}>Book Now</button>
               </div>
             ))
@@ -229,8 +247,12 @@ export default function BookingPage() {
       )}
       {selectedBus && (
         <div className="seat-booking-section">
-          <h3>{selectedBus.name} ({selectedBus.type})</h3>
-          <p>{selectedBus.from} → {selectedBus.to} | ₹{selectedBus.fare} max fare</p>
+          <h3>
+            {selectedBus.name} ({selectedBus.type})
+          </h3>
+          <p>
+            {selectedBus.from} → {selectedBus.to} | ₹{selectedBus.fare} max fare
+          </p>
           <div className="seats-grid">{renderSeatLayout()}</div>
           {selectedSeats.length > 0 && (
             <div className="selected-seats-info" style={{ marginBottom: "1rem", fontWeight: "bold" }}>
@@ -248,13 +270,18 @@ export default function BookingPage() {
               <option>Female</option>
               <option>Other</option>
             </select>
-            <select value={boardingPoint} onChange={(e) => {
-              setBoardingPoint(e.target.value);
-              setDroppingPoint("");
-            }}>
+            <select
+              value={boardingPoint}
+              onChange={(e) => {
+                setBoardingPoint(e.target.value);
+                setDroppingPoint("");
+              }}
+            >
               <option value="">Select Boarding Point</option>
               {selectedBus.routeStops.map((stop, i) => (
-                <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+                <option key={i} value={stop.stop}>
+                  {stop.stop} ({stop.time})
+                </option>
               ))}
             </select>
             <select value={droppingPoint} onChange={(e) => setDroppingPoint(e.target.value)} disabled={!boardingPoint}>
@@ -262,7 +289,9 @@ export default function BookingPage() {
               {selectedBus.routeStops
                 .slice(selectedBus.routeStops.findIndex((s) => s.stop === boardingPoint) + 1)
                 .map((stop, i) => (
-                  <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+                  <option key={i} value={stop.stop}>
+                    {stop.stop} ({stop.time})
+                  </option>
                 ))}
             </select>
             {boardingPoint && droppingPoint && (
@@ -281,7 +310,9 @@ export default function BookingPage() {
                     <option value="Paytm">Paytm</option>
                   </select>
                 </label>
-                <button onClick={handleConfirmBooking} style={{ marginTop: "1rem" }}>Pay</button>
+                <button onClick={handleConfirmBooking} style={{ marginTop: "1rem" }}>
+                  Pay
+                </button>
               </div>
             )}
           </div>
