@@ -19,6 +19,7 @@ export default function NavBar() {
         </div>
         <ul className="nav-links">
           <li><Link to="/" className="nav-item">Home</Link></li>
+          <li><Link to="/" className="nav-item">Admin Dashboard</Link></li>
           <li><Link to="/about" className="nav-item">About</Link></li>
           <li><Link to="/contact" className="nav-item">Contact</Link></li>
           <li><Link to="/search" className="nav-item">SearchBus</Link></li>
