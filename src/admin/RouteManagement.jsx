@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 export default function RouteManagement() {
-  const [routes, setRoutes] = useState(JSON.parse(localStorage.getItem("routes")) || []);
+  const [routes, setRoutes] = useState(() => JSON.parse(localStorage.getItem("routes")) || []);
   const [newRoute, setNewRoute] = useState({ from: "", to: "", distance: "" });
 
   useEffect(() => {
@@ -25,7 +25,6 @@ export default function RouteManagement() {
         <input placeholder="Distance (km)" type="number" value={newRoute.distance} onChange={(e) => setNewRoute({ ...newRoute, distance: e.target.value })} />
         <button onClick={addRoute}>Add Route</button>
       </div>
-
       <ul>
         {routes.map((r) => (
           <li key={r.id}>

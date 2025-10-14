@@ -4,9 +4,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 export default function AdminDashboard() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    navigate("/");
-  };
+  const handleLogout = () => navigate("/");
+
   return (
     <div style={styles.container}>
       <aside style={styles.sidebar}>
@@ -25,8 +24,6 @@ export default function AdminDashboard() {
       <main style={styles.content}>
         <h1>Welcome to the Admin Dashboard</h1>
         <p>Manage buses, routes, bookings, and view reports here.</p>
-
-        {/* ✅ Admin Sub-Pages Load Here */}
         <Outlet />
       </main>
     </div>
@@ -34,47 +31,11 @@ export default function AdminDashboard() {
 }
 
 const styles = {
-  container: {
-    display: "flex",
-    minHeight: "100vh",
-    backgroundColor: "#f8fafc",
-  },
-  sidebar: {
-    width: "250px",
-    backgroundColor: "#1e293b",
-    color: "white",
-    padding: "20px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  title: {
-    fontSize: "22px",
-    fontWeight: "bold",
-    marginBottom: "20px",
-    textAlign: "center",
-  },
-  menu: {
-    listStyle: "none",
-    padding: 0,
-  },
-  link: {
-    color: "white",
-    textDecoration: "none",
-    display: "block",
-    padding: "10px 0",
-    borderBottom: "1px solid #334155",
-  },
-  logout: {
-    backgroundColor: "#ef4444",
-    color: "white",
-    border: "none",
-    padding: "10px",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-  content: {
-    flex: 1,
-    padding: "30px",
-  },
+  container: { display: "flex", minHeight: "100vh", backgroundColor: "#f8fafc" },
+  sidebar: { width: "250px", backgroundColor: "#1e293b", color: "white", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" },
+  title: { fontSize: "22px", fontWeight: "bold", marginBottom: "20px", textAlign: "center" },
+  menu: { listStyle: "none", padding: 0 },
+  link: { color: "white", textDecoration: "none", display: "block", padding: "10px 0", borderBottom: "1px solid #334155" },
+  logout: { backgroundColor: "#ef4444", color: "white", border: "none", padding: "10px", borderRadius: "6px", cursor: "pointer" },
+  content: { flex: 1, padding: "30px" },
 };

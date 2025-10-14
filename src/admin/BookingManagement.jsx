@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
+import sampleBuses from "../data/buses"; // ✅ import buses data
+
 export default function BookingManagement() {
   const [bookings, setBookings] = useState([]);
+
   useEffect(() => {
     const stored = localStorage.getItem("bookings");
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
         const enriched = parsed.map((b) => {
-          const busInfo = buses.find((bus) => bus.id === b.busId);
+          const busInfo = sampleBuses.find((bus) => bus.id === b.busId);
           return {
             ...b,
             busName: busInfo ? busInfo.name : b.busName || "Unknown Bus",
-            route: busInfo ? busInfo.route : b.route || "-",
+            route: busInfo ? `${busInfo.from} → ${busInfo.to}` : b.route || "-",
             fare: busInfo ? busInfo.fare : b.fare || 0,
           };
         });
@@ -21,11 +24,13 @@ export default function BookingManagement() {
       }
     }
   }, []);
+
   const cancelBooking = (id) => {
     const updated = bookings.filter((b) => b.id !== id);
     setBookings(updated);
     localStorage.setItem("bookings", JSON.stringify(updated));
   };
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>📋 Booking Management</h2>

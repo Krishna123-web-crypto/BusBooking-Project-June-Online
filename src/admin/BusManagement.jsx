@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import sampleBuses from "../data/buses";
 
 export default function BusManagement() {
-  const [buses, setBuses] = useState(busesData);
+  const [buses, setBuses] = useState(() => JSON.parse(localStorage.getItem("buses")) || sampleBuses);
 
-  const deleteBus = (id) => {
-    setBuses(buses.filter((b) => b.id !== id));
-  };
+  useEffect(() => {
+    localStorage.setItem("buses", JSON.stringify(buses));
+  }, [buses]);
+
+  const deleteBus = (id) => setBuses(buses.filter((b) => b.id !== id));
 
   return (
     <div>
@@ -13,18 +16,10 @@ export default function BusManagement() {
       <ul>
         {buses.map((bus) => (
           <li key={bus.id}>
-            {bus.name} ({bus.route}) – ₹{bus.fare}
+            {bus.name} ({bus.from} → {bus.to}) – ₹{bus.fare}
             <button
               onClick={() => deleteBus(bus.id)}
-              style={{
-                marginLeft: "10px",
-                backgroundColor: "#e74c3c",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                padding: "4px 8px",
-                cursor: "pointer",
-              }}
+              style={{ marginLeft: "10px", backgroundColor: "#e74c3c", color: "white", border: "none", borderRadius: "4px", padding: "4px 8px", cursor: "pointer" }}
             >
               Delete
             </button>
