@@ -7,7 +7,6 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     navigate("/");
   };
-
   return (
     <div style={styles.container}>
       <aside style={styles.sidebar}>
