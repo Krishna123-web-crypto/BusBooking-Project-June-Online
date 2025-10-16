@@ -1,42 +1,138 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ====== Global Reset ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* ====== Global Font and Colors ====== */
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ====== App Container ====== */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* ====== Page Section ====== */
+main {
+  flex: 1;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: auto;
 }
 
+/* ====== Headings ====== */
+h1, h2, h3, h4, h5 {
+  color: #222;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+/* ====== Buttons ====== */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* ====== Links ====== */
+a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+/* ====== Cards (General purpose) ====== */
 .card {
-  padding: 2em;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin: 15px 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.read-the-docs {
-  color: #888;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* ====== Forms (Global Styling) ====== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input, select {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  outline: none;
+}
+
+/* ====== Footer (Optional) ====== */
+footer {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 14px;
+  margin-top: auto;
+}
+
+/* ====== Responsive Design ====== */
+@media (max-width: 768px) {
+  main {
+    padding: 25px 15px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  main {
+    padding: 20px 10px;
+  }
 }

@@ -1,34 +1,34 @@
 import React, { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null); 
   useEffect(() => {
-    const loggedIn = localStorage.getItem("loggedIn") === "true";
-    const userData = localStorage.getItem("user");
-    if (loggedIn && userData) {
+    const raw = localStorage.getItem("user");
+    if (raw) {
       try {
-        setUser(JSON.parse(userData));
-      } catch {
-        setUser({ email: userData });
+        const parsed = JSON.parse(raw);
+        setUser(parsed);
+        setIsLoggedIn(true);
+      } catch (err) {
+        console.error("Failed to parse stored user:", err);
+        localStorage.removeItem("user");
       }
-      setIsLoggedIn(true);
     }
   }, []);
-  const login = (userData) => {
+  const login = (account) => {
+    const acct = { ...account };
+    setUser(acct);
     setIsLoggedIn(true);
-    setUser(userData);
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(acct));
   };
   const logout = () => {
-    setIsLoggedIn(false);
     setUser(null);
-    localStorage.removeItem("loggedIn");
+    setIsLoggedIn(false);
     localStorage.removeItem("user");
   };
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

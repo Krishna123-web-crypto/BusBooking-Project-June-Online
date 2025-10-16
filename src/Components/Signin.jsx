@@ -1,151 +1,145 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import "../assets/Signin.css";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "./Context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 export default function SignIn() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [loginMethod, setLoginMethod] = useState("email");
+  const [role, setRole] = useState("user"); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [timer, setTimer] = useState(0);
-  useEffect(() => {
-    let interval;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
-  const handleSendOtp = () => {
-    if (phone) {
-      setOtpSent(true);
-      setTimer(60);
-      alert("OTP sent to your phone (simulated)");
-    } else {
-      alert("Please enter phone number.");
-    }
-  };
-  const handleSignIn = (e) => {
+  const [name, setName] = useState("");   
+  const [phone, setPhone] = useState("");  
+  const [isRegister, setIsRegister] = useState(false);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (loginMethod === "email") {
-      if (email && password) {
-        login({ email });
-        alert(`Signed in with Email: ${email}`);
-        navigate("/");
-      } 
-      else {
-        alert("Please enter both email and password.");
+    if (isRegister) {
+      if (!name || !email || !password || !phone) {
+        alert("All fields are required!");
+        return;
       }
-    } 
-    else {
-      if (!otpSent) {
-        handleSendOtp();
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      if (users.find(u => u.email === email)) {
+        alert("User already exists! Please sign in.");
+        return;
+      }
+      const newUser = { name, email, password, role: "user", phone };
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("User registration successful. Please sign in.");
+      setIsRegister(false);
+      setName(""); setEmail(""); setPassword(""); setPhone("");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const admins = JSON.parse(localStorage.getItem("admins")) || [];
+    let account = null;
+
+    if (role === "admin") {
+      const isPredefinedAdmin = email === "admin@example.com" && password === "admin123";
+      if (isPredefinedAdmin) {
+        account = { name: "Admin", email, role: "admin" };
       } else {
-        if (otp === "1234") {
-          login({ phone });
-          alert(`Signed in with Phone: ${phone}`);
-          navigate("/");
-        } 
-        else {
-          alert("Invalid OTP");
-        }
+        account = admins.find(a => a.email === email && a.password === password);
       }
+    } else {
+      account = users.find(u => u.email === email && u.password === password);
     }
-  };
-  const handleResendOtp = () => {
-    if (timer === 0) {
-      handleSendOtp();
+
+    if (!account) {
+      alert(`Invalid ${role} credentials!`);
+      return;
     }
+
+    login(account);
+    navigate(account.role === "admin" ? "/admin" : "/");
   };
+
+  const inputStyle = {
+    padding: "16px",
+    fontSize: "18px",
+    width: "350px",
+    marginBottom: "15px",
+    borderRadius: "6px",
+    border: "1px solid #ccc"
+  };
+
+  const buttonStyle = {
+    padding: "16px 32px",
+    fontSize: "18px",
+    cursor: "pointer",
+    borderRadius: "6px",
+    marginTop: "10px"
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    width: "360px"
+  };
+
   return (
-    <div className="signin-container">
-      <div className="signin-form">
-        <h2>Sign In</h2>
-        <div className="toggle-buttons">
-          <button
-            className={loginMethod === "email" ? "active" : ""}
-            onClick={() => setLoginMethod("email")}
-            type="button"
-          >
-            Email
-          </button>
-          <button
-            className={loginMethod === "phone" ? "active" : ""}
-            onClick={() => {
-              setLoginMethod("phone");
-              setOtpSent(false);
-              setPhone("");
-              setOtp("");
-              setTimer(0);
-            }}
-            type="button"
-          >
-            Phone
-          </button>
-        </div>
-        <form onSubmit={handleSignIn} className="signin-form-fields">
-          {loginMethod === "email" ? (
-            <>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Email"
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Password"
-              />
-            </>
-          ) : (
-            <>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                disabled={otpSent}
-                placeholder="Phone Number"
-              />
-              {otpSent && (
-                <>
-                  <input
-                    type="text"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    required
-                    placeholder="Enter OTP"
-                  />
-                  <div className="otp-info">
-                    {timer > 0 ? (
-                      <p>Resend OTP in {timer}s</p>
-                    ) : (
-                      <button type="button" onClick={handleResendOtp}>
-                        Resend OTP
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </>
-          )}
-          <button type="submit">
-            {loginMethod === "phone" && !otpSent ? "Send OTP" : "Sign In"}
-          </button>
-        </form>
-        <p>
-          Don’t have an account? <Link to="/register">Register</Link>
-        </p>
-      </div>
+    <div
+      className="signin-container"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        marginTop: "50px"
+      }}
+    >
+      <h2>{isRegister ? "User Registration" : "Sign In"}</h2>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {isRegister && (
+          <>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              style={inputStyle}
+            />
+            <input
+              type="text"
+              placeholder="Phone"
+              value={phone}
+              onChange={e => setPhone(e.target.value)}
+              style={inputStyle}
+            />
+          </>
+        )}
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={inputStyle}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          style={inputStyle}
+        />
+        <select value={role} onChange={e => setRole(e.target.value)} style={selectStyle}>
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <button type="submit" style={buttonStyle}>
+          {isRegister ? "Register" : "Sign In"}
+        </button>
+      </form>
+      <p
+        onClick={() => {
+          setIsRegister(!isRegister);
+          if (!isRegister) setRole("user");
+        }}
+        style={{ cursor: "pointer", color: "blue", marginTop: "15px" }}
+      >
+        {isRegister ? "Already registered? Sign In" : "New user? Register"}
+      </p>
     </div>
   );
 }
