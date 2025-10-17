@@ -1,29 +1,25 @@
-import React, { useState } from "react";
-import "../assets/Contact.css";
-export default function Contact() {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitted(true);
-  };
+import React from "react";
+import "../assets/About.css";
+
+export default function About() {
   return (
-    <div className="contact-container">
-      <h1 className="contact-heading">Contact Us</h1>
-      {isSubmitted ? (
-        <p className="thank-you">
-          Thanks for reaching out! We’ll get back to you as soon as possible.
+    <div className="about-container">
+      <h1 className="about-heading">About MyBusBook</h1>
+      <p className="about-text">
+        MyBusBook is your one-stop platform for booking bus tickets online quickly and securely.
+      </p>
+      <p className="about-text">
+        Our platform is user-friendly, responsive, and ensures your travel plans are just a few clicks away.
+        Thank you for choosing MyBusBook!
+      </p>
+
+      {/* Footer */}
+      <footer className="about-footer">
+        <p>© 2025 MyBusBook. All rights reserved.</p>
+        <p>
+          Contact us: <a href="mailto:contact@mybusbook.com">contact@mybusbook.com</a>
         </p>
-      ) : (
-        <form className="contact-form" onSubmit={handleFormSubmit}>
-          <label htmlFor="name">Name:</label>
-          <input id="name" type="text" name="name" required />
-          <label htmlFor="email">Email:</label>
-          <input id="email" type="email" name="email" required />
-          <label htmlFor="message">Message:</label>
-          <textarea id="message" name="message" rows="4" required />
-          <button type="submit">Send Message</button>
-        </form>
-      )}
+      </footer>
     </div>
   );
 }

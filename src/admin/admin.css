@@ -1,26 +1,23 @@
-/* Container */
+/* ====== ADMIN LAYOUT ====== */
 .admin-container {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Sidebar */
 .admin-sidebar {
   width: 250px;
-  background-color: #1e293b;
+  background: #0f172a;
   color: white;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 1rem;
 }
 
 .admin-title {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .admin-menu {
@@ -29,78 +26,126 @@
 }
 
 .admin-link {
-  color: white;
-  text-decoration: none;
   display: block;
-  padding: 10px 0;
-  border-bottom: 1px solid #334155;
+  color: white;
+  padding: 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 5px;
+  transition: 0.3s;
 }
 
-.admin-link:hover {
-  background-color: #334155;
-  border-radius: 4px;
+.admin-link:hover,
+.admin-link.active {
+  background: #2563eb;
+  color: white;
 }
 
 .admin-logout {
-  background-color: #ef4444;
+  background: #ef4444;
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 0.75rem;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
 }
 
-/* Main content */
 .admin-content {
   flex: 1;
-  padding: 30px;
+  background: #f1f5f9;
+  padding: 2rem;
+  overflow-y: auto;
 }
 
-/* Forms */
+/* ====== FORM STYLES ====== */
 .admin-form {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 1.5rem;
 }
 
 .admin-form input {
-  padding: 6px 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 150px;
+  background-color: #fff;
+  font-size: 14px;
 }
 
 .admin-form button {
   background-color: #2563eb;
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Lists */
-.admin-list {
-  list-style: none;
-  padding: 0;
-}
-
-.admin-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  margin-bottom: 8px;
-  padding: 10px;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
 }
 
-.admin-list li button {
-  background-color: #e11d48;
+.admin-form button:hover {
+  background-color: #1d4ed8;
+}
+
+/* ====== BUS TABLE STYLES ====== */
+.table-container {
+  overflow-x: auto;
+}
+
+.bus-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.bus-table th,
+.bus-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.bus-table th {
+  background-color: #0f172a;
   color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bus-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.bus-table tr:hover {
+  background-color: #eef3f8;
+}
+
+/* ====== DELETE BUTTON ====== */
+.delete-btn {
+  background-color: #ef4444;
   border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #b91c1c;
+}
+
+/* ====== EMPTY STATE ====== */
+.no-data {
+  text-align: center;
+  color: #777;
+  margin-top: 20px;
+  font-style: italic;
 }

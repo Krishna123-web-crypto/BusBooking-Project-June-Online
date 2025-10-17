@@ -1,5 +1,6 @@
 import React from "react";
 import "./admin.css";
+
 export default function Reports() {
   return (
     <div>

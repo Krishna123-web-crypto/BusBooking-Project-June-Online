@@ -35,7 +35,9 @@ export default function NavBar() {
 
           {isLoggedIn ? (
             <>
-              <li><Link to="/booking" className="nav-item">Booking</Link></li>
+              {user?.role === "user" && (
+                <li><Link to="/booking" className="nav-item">Booking</Link></li>
+              )}
               {userDisplay && <li><span className="nav-user">👤 {userDisplay}</span></li>}
               <li>
                 <button className="nav-item logout-button" onClick={handleSignOut}>

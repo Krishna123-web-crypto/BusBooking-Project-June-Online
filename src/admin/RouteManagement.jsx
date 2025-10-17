@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "./admin.css";
+
 export default function RouteManagement() {
   const [routes, setRoutes] = useState(() => JSON.parse(localStorage.getItem("routes")) || []);
   const [newRoute, setNewRoute] = useState({ from: "", to: "", distance: "" });
+
   useEffect(() => {
     localStorage.setItem("routes", JSON.stringify(routes));
   }, [routes]);
+
   const addRoute = () => {
     if (!newRoute.from || !newRoute.to || !newRoute.distance)
       return alert("Please fill all fields");
+
     const route = { id: Date.now(), ...newRoute };
     setRoutes([...routes, route]);
     setNewRoute({ from: "", to: "", distance: "" });
   };
+
   const deleteRoute = (id) => setRoutes(routes.filter((r) => r.id !== id));
+
   return (
     <div>
       <h2>🗺️ Route Management</h2>
