@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../assets/SearchForm.css";
 const LOCATIONS = [
-  "Hyderabad", "Vijayawada", "Rajampet", "Tirupati", "Tirumala", "Madanapalle",
-  "Kadapa", "Bengaluru", "Sri Kalahasti", "Rayachoti", "Nellore"
+  "Hyderabad", "Vijayawada", "Rajampet", "Tirupati", "Tirumala", "Madanapalle", "Pune",
+  "Kadapa", "Bengaluru", "Sri Kalahasti", "Rayachoti", "Nellore", "Chennai", "Mumbai"
 ];
 const BUS_TYPES = ["All", "AC", "Non-AC", "Deluxe", "Ultra Deluxe", "Express"];
 export default function SearchForm({ onSearch }) {

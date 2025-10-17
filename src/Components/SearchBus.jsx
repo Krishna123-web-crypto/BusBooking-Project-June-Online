@@ -4,7 +4,9 @@ import "../assets/SearchBus.css";
 import TripDetails from "../Components/TripDetails";
 import sampleBuses from "../data/buses";
 import MapModal from "../Components/MapModal";
+
 const uniq = (arr) => [...new Set(arr)];
+
 function parseTimeTo24hHours(timeStr) {
   const match = timeStr.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
   if (!match) return null;
@@ -15,21 +17,25 @@ function parseTimeTo24hHours(timeStr) {
   if (mer.toUpperCase() === "AM" && hours === 12) hours = 0;
   return hours + minutes / 60;
 }
+
 function isOvernight(departure, arrival) {
   const dep = parseTimeTo24hHours(departure);
   const arr = parseTimeTo24hHours(arrival);
   if (dep == null || arr == null) return false;
   return arr < dep;
 }
+
 export default function SearchBus() {
   const locations = useMemo(
     () => uniq([...sampleBuses.map((b) => b.from), ...sampleBuses.map((b) => b.to)]),
     []
   );
+
   const busTypes = useMemo(
     () => ["All Types", ...uniq(sampleBuses.map((b) => b.type))],
     []
   );
+
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [typeFilter, setTypeFilter] = useState("All Types");
@@ -38,6 +44,7 @@ export default function SearchBus() {
   const [showMapModal, setShowMapModal] = useState(false);
   const [selectedBus, setSelectedBus] = useState(null);
   const resultsRef = useRef(null);
+
   const runSearch = useCallback(() => {
     setSearched(true);
     if (!from || !to || from === to) {
@@ -53,6 +60,7 @@ export default function SearchBus() {
     setResults(filtered);
     setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }, [from, to, typeFilter]);
+
   const groupedResults = useMemo(() => {
     return results.reduce((acc, bus) => {
       const routeKey = `${bus.from} → ${bus.to}`;
@@ -61,6 +69,7 @@ export default function SearchBus() {
       return acc;
     }, {});
   }, [results]);
+
   const noResultMessage = useMemo(() => {
     if (!from && !to) return "Please select 'From' and 'To' locations.";
     if (from && !to) return "Please select a destination.";
@@ -68,120 +77,148 @@ export default function SearchBus() {
     if (from === to && from) return "'From' and 'To' cannot be the same.";
     return "No buses found for the selected route.";
   }, [from, to]);
+
   const handleOpenMap = (bus) => {
     setSelectedBus(bus);
     setShowMapModal(true);
   };
+
   return (
-    <div className="booking-container">
-      <div className="search-form">
-        <div className="filters-row">
-          <label>
-            From:
-            <select value={from} onChange={(e) => setFrom(e.target.value)}>
-              <option value="">From</option>
-              {locations.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            To:
-            <select value={to} onChange={(e) => setTo(e.target.value)}>
-              <option value="">To</option>
-              {locations
-                .filter((loc) => loc !== "Hyderabad")
-                .map((loc) => (
+    <>
+      <div className="booking-container">
+        <div className="search-form">
+          <div className="filters-row">
+            <label>
+              From:
+              <select value={from} onChange={(e) => setFrom(e.target.value)}>
+                <option value="">From</option>
+                {locations.map((loc) => (
                   <option key={loc} value={loc}>
                     {loc}
                   </option>
                 ))}
-            </select>
-          </label>
-          <label>
-            Type:
-            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-              {busTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </label>
+              </select>
+            </label>
+
+            <label>
+              To:
+              <select value={to} onChange={(e) => setTo(e.target.value)}>
+                <option value="">To</option>
+                {locations
+                  .filter((loc) => loc !== "Hyderabad")
+                  .map((loc) => (
+                    <option key={loc} value={loc}>
+                      {loc}
+                    </option>
+                  ))}
+              </select>
+            </label>
+
+            <label>
+              Type:
+              <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+                {busTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="search-button-wrapper">
+            <button onClick={runSearch}>Search</button>
+          </div>
         </div>
-        <div className="search-button-wrapper">
-          <button onClick={runSearch}>Search</button>
-        </div>
-      </div>
-      <div ref={resultsRef}>
-        {searched && Object.keys(groupedResults).length === 0 && (
-          <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
-        )}
-        {Object.entries(groupedResults).map(([route, buses]) => (
-          <div key={route} className="route-group">
-            <h2 className="route-title">{route}</h2>
-            {buses.map((bus) => {
-              const availableSeats = bus.totalSeats - bus.bookedSeats.length;
-              return (
-                <div key={bus.id} className="bus-card apsrtc-style">
-                  <div className="bus-header">
-                    <h3 className="bus-name">{bus.name}</h3>
-                    <p className="bus-type">{bus.type}</p>
-                  </div>
-                  <p className="bus-info">
-                    <strong>Departure:</strong> {bus.departure} | <strong>Arrival:</strong> {bus.arrival}
-                  </p>
-                  <p className="bus-info">
-                    <strong>Fare:</strong> ₹{bus.fare}
-                  </p>
-                  <p className="bus-info">
-                    <strong>Seats Available:</strong> {availableSeats}
-                  </p>
-                  <p
-                    className="journey-type"
-                    style={{
-                      color: isOvernight(bus.departure, bus.arrival) ? "red" : "green",
-                    }}
-                  >
-                    {isOvernight(bus.departure, bus.arrival) ? "Overnight Journey" : "Day Journey"}
-                  </p>
-                  <TripDetails
-                    stops={bus.routeStops}
-                    currentIndex={bus.currentStopIndex || -1}
-                  />
-                  <div style={{ textAlign: "right", marginTop: "10px" }}>
-                    <button
-                      className="open-map-button"
-                      onClick={() => handleOpenMap(bus)}
+
+        <div ref={resultsRef}>
+          {searched && Object.keys(groupedResults).length === 0 && (
+            <p style={{ padding: "20px", textAlign: "center" }}>{noResultMessage}</p>
+          )}
+          {Object.entries(groupedResults).map(([route, buses]) => (
+            <div key={route} className="route-group">
+              <h2 className="route-title">{route}</h2>
+              {buses.map((bus) => {
+                const availableSeats = bus.totalSeats - bus.bookedSeats.length;
+                return (
+                  <div key={bus.id} className="bus-card apsrtc-style">
+                    <div className="bus-header">
+                      <h3 className="bus-name">{bus.name}</h3>
+                      <p className="bus-type">{bus.type}</p>
+                    </div>
+                    <p className="bus-info">
+                      <strong>Departure:</strong> {bus.departure} |{" "}
+                      <strong>Arrival:</strong> {bus.arrival}
+                    </p>
+                    <p className="bus-info">
+                      <strong>Fare:</strong> ₹{bus.fare}
+                    </p>
+                    <p className="bus-info">
+                      <strong>Seats Available:</strong> {availableSeats}
+                    </p>
+                    <p
+                      className="journey-type"
                       style={{
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        border: "none",
-                        padding: "6px 12px",
-                        borderRadius: "5px",
-                        cursor: "pointer"
+                        color: isOvernight(bus.departure, bus.arrival)
+                          ? "red"
+                          : "green",
                       }}
                     >
-                      Open Map
-                    </button>
+                      {isOvernight(bus.departure, bus.arrival)
+                        ? "Overnight Journey"
+                        : "Day Journey"}
+                    </p>
+                    <TripDetails
+                      stops={bus.routeStops}
+                      currentIndex={bus.currentStopIndex || -1}
+                    />
+                    <div style={{ textAlign: "right", marginTop: "10px" }}>
+                      <button
+                        className="open-map-button"
+                        onClick={() => handleOpenMap(bus)}
+                        style={{
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          border: "none",
+                          padding: "6px 12px",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Open Map
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
+                );
+              })}
+            </div>
+          ))}
+        </div>
+
+        {showMapModal && selectedBus && (
+          <MapModal
+            buses={[selectedBus]}
+            onClose={() => {
+              setShowMapModal(false);
+              setSelectedBus(null);
+            }}
+          />
+        )}
       </div>
-      {showMapModal && selectedBus && (
-        <MapModal
-          buses={[selectedBus]}
-          onClose={() => {
-            setShowMapModal(false);
-            setSelectedBus(null);
-          }}
-        />
-      )}
-    </div>
+
+      {/* Footer specific to SearchBus */}
+      <footer
+        style={{
+          backgroundColor: "#007bff",
+          color: "white",
+          textAlign: "center",
+          padding: "1rem 0",
+          marginTop: "2rem",
+        }}
+      >
+        <p>Find your perfect route with MyBusBook — Fast, Easy & Reliable.</p>
+        <p>© 2025 MyBusBook | All rights reserved.</p>
+      </footer>
+    </>
   );
 }

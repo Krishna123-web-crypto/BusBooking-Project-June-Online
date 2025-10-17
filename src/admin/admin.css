@@ -1,10 +1,18 @@
-/* ====== ADMIN LAYOUT ====== */
+/* Ensure page takes full height */
+.admin-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Sidebar + main content layout */
 .admin-container {
   display: flex;
-  min-height: 100vh;
+  flex: 1; /* Expand to fill space above footer */
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* Sidebar styles */
 .admin-sidebar {
   width: 250px;
   background: #0f172a;
@@ -23,129 +31,49 @@
 .admin-menu {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .admin-link {
   display: block;
   color: white;
-  padding: 0.75rem;
-  border-radius: 8px;
   text-decoration: none;
-  margin-bottom: 5px;
-  transition: 0.3s;
+  padding: 0.5rem 0;
+  transition: background 0.3s;
 }
 
 .admin-link:hover,
 .admin-link.active {
-  background: #2563eb;
-  color: white;
+  background-color: #1e40af;
+  border-radius: 6px;
 }
 
 .admin-logout {
-  background: #ef4444;
+  background-color: #dc2626;
   color: white;
   border: none;
-  padding: 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.admin-content {
-  flex: 1;
-  background: #f1f5f9;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
-/* ====== FORM STYLES ====== */
-.admin-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 1.5rem;
-}
-
-.admin-form input {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  width: 150px;
-  background-color: #fff;
-  font-size: 14px;
-}
-
-.admin-form button {
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.admin-form button:hover {
-  background-color: #1d4ed8;
-}
-
-/* ====== BUS TABLE STYLES ====== */
-.table-container {
-  overflow-x: auto;
-}
-
-.bus-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  overflow: hidden;
-}
-
-.bus-table th,
-.bus-table td {
-  padding: 12px 14px;
-  border-bottom: 1px solid #e5e7eb;
-  text-align: center;
-}
-
-.bus-table th {
-  background-color: #0f172a;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.bus-table tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
-.bus-table tr:hover {
-  background-color: #eef3f8;
-}
-
-/* ====== DELETE BUTTON ====== */
-.delete-btn {
-  background-color: #ef4444;
-  border: none;
-  color: white;
-  padding: 6px 12px;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  transition: 0.3s;
+  margin-top: 1rem;
 }
 
-.delete-btn:hover {
+.admin-logout:hover {
   background-color: #b91c1c;
 }
 
-/* ====== EMPTY STATE ====== */
-.no-data {
+/* Main content area */
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f2f7fc;
+  min-height: 0; /* prevents overflow issues with flex */
+}
+
+/* Footer */
+.admin-footer {
+  background-color: #007bff;
+  color: white;
   text-align: center;
-  color: #777;
-  margin-top: 20px;
-  font-style: italic;
+  padding: 1rem 0;
 }

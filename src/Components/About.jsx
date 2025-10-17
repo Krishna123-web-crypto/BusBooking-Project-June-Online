@@ -11,7 +11,10 @@ export default function About() {
         Our platform is user-friendly, responsive, and ensures your travel plans are just a few clicks away.
         Thank you for choosing MyBusBook!
       </p>
+      {/* Footer specific to About */}
+      <footer className="about-footer">
+        <p>© 2025 MyBusBook | Designed for seamless travel booking.</p>
+      </footer>
     </div>
   );
 }
-
