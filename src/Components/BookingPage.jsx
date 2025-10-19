@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import SearchForm from "../Components/SearchForm";
 import sampleBuses from "../data/buses";
 import "../assets/BookingPage.css";
@@ -7,7 +10,7 @@ import { AuthContext } from "../Components/Context/AuthContext";
 
 const LS_KEY = "bookedSeatsByBus_v3";
 
-// Helper functions
+/* ----------------- Helper Functions ----------------- */
 function parseTimeTo24hHours(timeStr) {
   const match = timeStr.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
   if (!match) return null;
@@ -32,11 +35,13 @@ function calcDuration(depStr, arrStr) {
 
 function loadBookedSeats() {
   try {
-    return JSON.parse(localStorage.getItem(LS_KEY)) || {};
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
   }
 }
+
 function saveBookedSeats(obj) {
   localStorage.setItem(LS_KEY, JSON.stringify(obj));
 }
@@ -52,12 +57,27 @@ function calculateSplitFare(bus, from, to) {
   return Math.round(perSegmentFare * usedSegments);
 }
 
+/* ----------------- Map Auto-Fit Component ----------------- */
+function FitBoundsOnRoute({ stops }) {
+  const map = useMap();
+  useEffect(() => {
+    if (stops.length > 1) {
+      const bounds = L.latLngBounds(stops.map((s) => [s.lat, s.lng]));
+      map.fitBounds(bounds, { padding: [40, 40] });
+    }
+  }, [stops, map]);
+  return null;
+}
+
+/* ----------------- Booking Page ----------------- */
 export default function BookingPage() {
   const { isLoggedIn, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoggedIn || user?.role !== "user") navigate("/signin");
+    if (!isLoggedIn || user?.role !== "user") {
+      navigate("/signin");
+    }
   }, [isLoggedIn, user, navigate]);
 
   const [filteredBuses, setFilteredBuses] = useState([]);
@@ -76,6 +96,10 @@ export default function BookingPage() {
   const [droppingPoint, setDroppingPoint] = useState("");
   const [searchPerformed, setSearchPerformed] = useState(false);
 
+  // map panel state
+  const [mapBus, setMapBus] = useState(null);
+  const [showMapPanel, setShowMapPanel] = useState(false);
+
   useEffect(() => {
     saveBookedSeats(bookedSeatsLS);
   }, [bookedSeatsLS]);
@@ -90,6 +114,9 @@ export default function BookingPage() {
     setSelectedBus(null);
     setSelectedSeats([]);
     setShowPayment(false);
+    // close map if open
+    setMapBus(null);
+    setShowMapPanel(false);
   }, []);
 
   const effectiveBookedSeats = useMemo(() => {
@@ -105,12 +132,38 @@ export default function BookingPage() {
     );
   };
 
+  // ----------------- Updated Open Map Function -----------------
+  const openMapForBus = (bus) => {
+    setMapBus(bus);
+    setShowMapPanel(true);
+    // Do NOT modify selectedBus, selectedSeats, or showPayment
+  };
+
+  const closeMapPanel = () => {
+    setShowMapPanel(false);
+    setMapBus(null);
+  };
+
+  const getStopsBetween = (bus) => {
+    if (!bus) return [];
+    if (!journeyDetails) return bus.routeStops || [];
+    const stops = bus.routeStops || [];
+    const startIdx = stops.findIndex((s) => s.stop === journeyDetails.from);
+    const endIdx = stops.findIndex((s) => s.stop === journeyDetails.to);
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      return stops.slice(startIdx, endIdx + 1);
+    }
+    return stops;
+  };
+
+  const stopsForMap = useMemo(() => (mapBus ? getStopsBetween(mapBus) : []), [mapBus, journeyDetails]);
+
   const handleProceedToPayment = () => {
     if (
-      !passengerName ||
-      !passengerEmail ||
-      !passengerPhone ||
-      !passengerAge ||
+      !passengerName.trim() ||
+      !passengerEmail.trim() ||
+      !passengerPhone.trim() ||
+      !passengerAge.trim() ||
       !passengerGender ||
       selectedSeats.length === 0 ||
       !boardingPoint ||
@@ -127,12 +180,10 @@ export default function BookingPage() {
       alert("Please select a UPI app.");
       return;
     }
-
     const key = `${selectedBus.id}_${journeyDetails.date}`;
     const splitFare = calculateSplitFare(selectedBus, boardingPoint, droppingPoint);
     const total = selectedSeats.length * splitFare;
     const updatedSeats = { ...(bookedSeatsLS[key] || {}) };
-
     selectedSeats.forEach((seat) => {
       updatedSeats[seat] = {
         status: "booked",
@@ -141,10 +192,8 @@ export default function BookingPage() {
         phone: passengerPhone,
       };
     });
-
     setBookedSeatsLS((prev) => ({ ...prev, [key]: updatedSeats }));
     alert(`✅ Booking Confirmed!\nSeats: ${selectedSeats.join(", ")}\nTotal: ₹${total}`);
-
     setSelectedSeats([]);
     setPassengerName("");
     setPassengerEmail("");
@@ -160,7 +209,6 @@ export default function BookingPage() {
   const handleCancelSeat = (seat) => {
     const data = effectiveBookedSeats[seat];
     if (!data) return;
-
     const sameUser =
       data.name === passengerName &&
       data.email === passengerEmail &&
@@ -169,10 +217,8 @@ export default function BookingPage() {
       alert("Only the person who booked the seat can cancel it.");
       return;
     }
-
     const reason = prompt("Enter reason for cancellation:");
     if (!reason) return;
-
     const key = `${selectedBus.id}_${journeyDetails.date}`;
     const updated = { ...bookedSeatsLS[key] };
     updated[seat] = { ...data, status: "cancelled", reason };
@@ -185,22 +231,13 @@ export default function BookingPage() {
     const isBooked = seatData?.status === "booked";
     const isCancelled = seatData?.status === "cancelled";
     if (isCancelled) return null;
-
     return (
       <button
         key={num}
-        className={`seat ${
-          selectedSeats.includes(num) ? "selected" : ""
-        } ${isBooked ? "booked" : ""} ${isWindow ? "window-seat" : ""}`}
+        className={`seat ${selectedSeats.includes(num) ? "selected" : ""} ${isBooked ? "booked" : ""} ${isWindow ? "window-seat" : ""}`}
         onClick={() => (isBooked ? handleCancelSeat(num) : toggleSeat(num))}
         disabled={isBooked}
-        title={
-          isBooked
-            ? `Booked by ${seatData.name}`
-            : isWindow
-            ? "Window Seat"
-            : "Available Seat"
-        }
+        title={isBooked ? `Booked by ${seatData.name}` : isWindow ? "Window Seat" : "Available Seat"}
       >
         {num}
       </button>
@@ -213,23 +250,8 @@ export default function BookingPage() {
     const layout = [];
 
     layout.push(
-      <div
-        key="driver-seat"
-        className="seat-row"
-        style={{ marginBottom: "1rem", justifyContent: "flex-start", paddingLeft: "1rem" }}
-      >
-        <div
-          className="seat driver-seat"
-          title="Driver Seat"
-          style={{
-            background: "#374151",
-            color: "white",
-            cursor: "default",
-            fontWeight: "bold",
-          }}
-        >
-          D
-        </div>
+      <div key="driver" className="seat-row" style={{ marginBottom: "1rem", justifyContent: "flex-start", paddingLeft: "1rem" }}>
+        <div className="seat driver-seat" style={{ background: "#374151", color: "white", cursor: "default" }}>D</div>
       </div>
     );
 
@@ -237,7 +259,6 @@ export default function BookingPage() {
     const lastRowSeats = 8;
     const numRows = Math.floor((total - lastRowSeats) / seatsPerRow);
     let seatNum = 1;
-
     for (let i = 0; i < numRows; i++) {
       layout.push(
         <div key={`row-${i}`} className="seat-row">
@@ -255,107 +276,194 @@ export default function BookingPage() {
 
     layout.push(
       <div key="last-row" className="seat-row back-row" style={{ gap: 0 }}>
-        {[...Array(lastRowSeats)].map((_, i) =>
-          renderSeat(seatNum++, i === 0 || i === lastRowSeats - 1)
-        )}
+        {[...Array(lastRowSeats)].map((_, i) => renderSeat(seatNum++, i === 0 || i === lastRowSeats - 1))}
       </div>
     );
 
     return layout;
   };
 
+  const routeSegment =
+    selectedBus &&
+    boardingPoint &&
+    droppingPoint &&
+    selectedBus.routeStops.slice(
+      selectedBus.routeStops.findIndex((s) => s.stop === boardingPoint),
+      selectedBus.routeStops.findIndex((s) => s.stop === droppingPoint) + 1
+    );
+
   return (
-    <>
-      <div className="booking-container">
-        <SearchForm onSearch={handleSearch} />
+    <div className="booking-container">
+      <SearchForm onSearch={handleSearch} />
 
-        {searchPerformed && filteredBuses.length === 0 && <p>No buses found.</p>}
-
-        {filteredBuses.length > 0 && !selectedBus && (
-          <div className="bus-list">
-            <h3>Select a Bus:</h3>
-            {filteredBuses.map((bus) => (
-              <div key={bus.id} className="bus-item" onClick={() => setSelectedBus(bus)}>
-                <strong>{bus.name}</strong> | {bus.type} | {bus.departure} - {bus.arrival} |
-                Duration: {calcDuration(bus.departure, bus.arrival)} | Fare: ₹{bus.fare}
-              </div>
-            ))}
+      {/* Map panel */}
+      {showMapPanel && mapBus && (
+        <div className="map-panel">
+          <div className="map-panel-header">
+            <div>
+              <h3>{mapBus.name} — {mapBus.from} → {mapBus.to}</h3>
+              <p className="muted">Departure: {mapBus.departure} · Arrival: {mapBus.arrival} · {calcDuration(mapBus.departure, mapBus.arrival)}</p>
+            </div>
+            <div>
+              <button className="btn" onClick={closeMapPanel}>Close Map</button>
+            </div>
           </div>
-        )}
 
-        {selectedBus && (
-          <div className="seat-selection">
-            <h3>Selected Bus: {selectedBus.name}</h3>
-            <div className="seats">{renderSeatLayout()}</div>
-
-            <div className="passenger-details">
-              <h4>Passenger Details:</h4>
-              <input placeholder="Name" value={passengerName} onChange={(e) => setPassengerName(e.target.value)} />
-              <input placeholder="Email" value={passengerEmail} onChange={(e) => setPassengerEmail(e.target.value)} />
-              <input placeholder="Phone" value={passengerPhone} onChange={(e) => setPassengerPhone(e.target.value)} />
-              <input placeholder="Age" value={passengerAge} onChange={(e) => setPassengerAge(e.target.value)} />
-              <select value={passengerGender} onChange={(e) => setPassengerGender(e.target.value)}>
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              <select value={boardingPoint} onChange={(e) => setBoardingPoint(e.target.value)}>
-                <option value="">Select Boarding</option>
-                {selectedBus.routeStops.map((s) => (
-                  <option key={s.stop} value={s.stop}>
-                    {s.stop}
-                  </option>
+          <div className="map-panel-body">
+            <div className="map-panel-map">
+              <MapContainer center={[15.9129, 79.74]} zoom={6} style={{ height: "100%", width: "100%" }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap contributors' />
+                {stopsForMap.map((stop, idx) => (
+                  <Marker key={idx} position={[stop.lat, stop.lng]} title={`${stop.stop} — ${stop.time || ""}`} />
                 ))}
-              </select>
-              <select value={droppingPoint} onChange={(e) => setDroppingPoint(e.target.value)}>
-                <option value="">Select Dropping</option>
-                {selectedBus.routeStops.map((s) => (
-                  <option key={s.stop} value={s.stop}>
-                    {s.stop}
-                  </option>
-                ))}
-              </select>
+                <Polyline positions={stopsForMap.map((s) => [s.lat, s.lng])} color="blue" weight={4} />
+                <FitBoundsOnRoute stops={stopsForMap} />
+              </MapContainer>
             </div>
 
-            {!showPayment && (
-              <button onClick={handleProceedToPayment} className="proceed-btn">
-                Proceed to Payment
-              </button>
+            <aside className="map-panel-stops">
+              <h4>Stops & ETA</h4>
+              <ul>
+                {stopsForMap.map((s, i) => (
+                  <li key={i}>
+                    <div className="stop-name">{s.stop}</div>
+                    <div className="stop-meta">{s.time || "-"}</div>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+        </div>
+      )}
+
+      {/* Bus list */}
+      {!selectedBus && searchPerformed && (
+        <div className="results-section">
+          <h3>Available Buses</h3>
+          {filteredBuses.length === 0 ? (
+            <p>No buses found.</p>
+          ) : (
+            filteredBuses.map((bus) => {
+              const stopsBetween = getStopsBetween(bus);
+              return (
+                <div key={bus.id} className="bus-card">
+                  <h4 className="bus-name">{bus.name} ({bus.type})</h4>
+                  <div className="route-timeline">
+                    {stopsBetween.map((stop, index) => (
+                      <div key={index} className="route-stop">
+                        <div className="stop-dot"></div>
+                        <div className="stop-details">
+                          <strong>{stop.stop}</strong>
+                          <span className="muted">{stop.time}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p>{bus.from} → {bus.to} | ₹{bus.fare}</p>
+                  <p>Departure: {bus.departure}, Arrival: {bus.arrival} | Duration: {calcDuration(bus.departure, bus.arrival)}</p>
+
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => setSelectedBus(bus)}>Book Now</button>
+                    <button onClick={() => openMapForBus(bus)}>Open Map</button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+
+      {/* Seat booking section */}
+      {selectedBus && (
+        <div className="seat-booking-section">
+          <h3>{selectedBus.name} ({selectedBus.type})</h3>
+          <p>{selectedBus.from} → {selectedBus.to} | ₹{selectedBus.fare} max fare</p>
+
+          {routeSegment && (
+            <div className="route-map-container" style={{ margin: "1rem 0" }}>
+              <h4>Route Preview</h4>
+              <MapContainer center={[15.9129, 79.74]} zoom={6} style={{ height: "300px", width: "100%", borderRadius: "10px" }}>
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; OpenStreetMap contributors'
+                />
+                {routeSegment.map((stop, index) => (
+                  <Marker key={index} position={[stop.lat, stop.lng]} title={stop.stop} />
+                ))}
+                <Polyline positions={routeSegment.map((s) => [s.lat, s.lng])} color="blue" weight={4} />
+                <FitBoundsOnRoute stops={routeSegment} />
+              </MapContainer>
+            </div>
+          )}
+
+          <div className="seats-grid">{renderSeatLayout()}</div>
+
+          {selectedSeats.length > 0 && <div className="selected-seats-info">Selected Seats: {selectedSeats.join(", ")}</div>}
+
+          {/* Passenger details */}
+          <div className="passenger-form big-inputs">
+            <input type="text" placeholder="Passenger Name" value={passengerName} onChange={(e) => setPassengerName(e.target.value)} />
+            <input type="email" placeholder="Email" value={passengerEmail} onChange={(e) => setPassengerEmail(e.target.value)} />
+            <input type="tel" placeholder="Phone" value={passengerPhone} onChange={(e) => setPassengerPhone(e.target.value)} />
+            <input type="number" placeholder="Age" value={passengerAge} onChange={(e) => setPassengerAge(e.target.value)} />
+            <select value={passengerGender} onChange={(e) => setPassengerGender(e.target.value)}>
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+
+            <select
+              value={boardingPoint}
+              onChange={(e) => {
+                setBoardingPoint(e.target.value);
+                setDroppingPoint("");
+              }}
+            >
+              <option value="">Select Boarding Point</option>
+              {selectedBus.routeStops.map((stop, i) => (
+                <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+              ))}
+            </select>
+
+            <select
+              value={droppingPoint}
+              onChange={(e) => setDroppingPoint(e.target.value)}
+              disabled={!boardingPoint}
+            >
+              <option value="">Select Dropping Point</option>
+              {selectedBus.routeStops
+                .slice(selectedBus.routeStops.findIndex((s) => s.stop === boardingPoint) + 1)
+                .map((stop, i) => (
+                  <option key={i} value={stop.stop}>{stop.stop} ({stop.time})</option>
+                ))}
+            </select>
+
+            {boardingPoint && droppingPoint && (
+              <p className="fare-info">
+                Per Seat Fare for this route: ₹{calculateSplitFare(selectedBus, boardingPoint, droppingPoint)}
+              </p>
             )}
 
-            {showPayment && (
+            {!showPayment ? (
+              <button onClick={handleProceedToPayment}>Proceed to Payment</button>
+            ) : (
               <div className="payment-section">
-                <h4>Payment</h4>
-                <select value={upiApp} onChange={(e) => setUpiApp(e.target.value)}>
-                  <option value="">Select UPI App</option>
-                  <option value="Google Pay">Google Pay</option>
-                  <option value="PhonePe">PhonePe</option>
-                  <option value="Paytm">Paytm</option>
-                </select>
-                <button onClick={handleConfirmBooking} className="confirm-btn">
-                  Confirm Booking
-                </button>
+                <label>
+                  Select UPI App:
+                  <select value={upiApp} onChange={(e) => setUpiApp(e.target.value)}>
+                    <option value="">--Choose UPI App--</option>
+                    <option value="PhonePe">PhonePe</option>
+                    <option value="Google Pay">Google Pay</option>
+                    <option value="Paytm">Paytm</option>
+                  </select>
+                </label>
+                <button onClick={handleConfirmBooking} style={{ marginTop: "1rem" }}>Pay</button>
               </div>
             )}
           </div>
-        )}
-      </div>
-
-      {/* Footer specific to BookingPage */}
-      <footer
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          textAlign: "center",
-          padding: "1rem 0",
-          marginTop: "2rem",
-        }}
-      >
-        <p>Thank you for booking with MyBusBook. Wishing you a safe journey!</p>
-        <p>© 2025 MyBusBook | All bookings are secured and encrypted.</p>
-      </footer>
-    </>
+        </div>
+      )}
+    </div>
   );
 }
-
