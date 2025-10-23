@@ -1227,11 +1227,8 @@ const sampleBuses = [
       { stop: "Rajampet", time: "9:00 PM", lat: 14.1959, lng: 79.1590 },
       { stop: "Balarajupally", time: "9:30 PM" },
       { stop: "Sanipayee", time: "10:00 PM" },
-      { stop: "Seetham Pet", time: "10:25 PM" },
       { stop: "Rayachoti", time: "10:45 PM", lat: 14.0575, lng: 78.7505 },
       { stop: "Chinmandyam", time: "11:20 PM" },
-      { stop: "Kesapuram", time: "11:30 PM" },
-      { stop: "Cherlopally-MPL", time: "11:50 PM" },
       { stop: "Gurramkonda", time: "12:00 AM" },
       { stop: "Angallu", time: "12:15 AM" },
       { stop: "Madanapalle", time: "12:40 AM", lat: 13.5503, lng: 78.5029 },
@@ -1262,8 +1259,6 @@ const sampleBuses = [
       { stop: "Madanapalle", time: "12:20 AM", lat: 13.5503, lng: 78.5029 },
       { stop: "Angallu", time: "12:45 AM" },
       { stop: "Gurramkonda", time: "1:00 AM" },
-      { stop: "Cherlopally-MPL", time: "1:15 AM" },
-      { stop: "Kesapuram", time: "1:30 AM" },
       { stop: "Chinmandyam", time: "1:50 AM" },
       { stop: "Rayachoti", time: "2:20 AM", lat: 14.0575, lng: 78.7505 },
       { stop: "Seetham Pet", time: "3:00 AM" },
@@ -1931,4 +1926,4 @@ const sampleBuses = [
     ],
   },
 ];
-export default sampleBuses;
+ export default sampleBuses;
